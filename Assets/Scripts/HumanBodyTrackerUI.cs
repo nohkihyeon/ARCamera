@@ -165,7 +165,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     {
         if (IsAdded == true)
         {
-            // 확장클래스를 활용해서 위치, 회전, 크기를 Deep copy
+            // 확장클래스를 활용해서 위치, 회전, 크기를 Deep copy BY 존시나
             for (int i=0; i < k_NumSkeletonJoints; i++)
             {
                 originalSkeleton[i] = humanBoneController.m_BoneMapping[i].Save().Position().Rotation().Scale();
