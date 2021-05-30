@@ -96,16 +96,14 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     private Dictionary<TrackableId, HumanBoneController> skeletonTracker = new Dictionary<TrackableId, HumanBoneController>();
 
-
-
-
-    private Dictionary<TrackableId, HumanBoneController> skeletonTracker2 = new Dictionary<TrackableId, HumanBoneController>();
-
-    Transform[] OriginalSkeleton = new Transform[k_NumSkeletonJoints];
-    StoreTransform[] originalSkeleton = new StoreTransform[k_NumSkeletonJoints];
+    //Transform[] OriginalSkeleton = new Transform[k_NumSkeletonJoints];
+    StoreTransform[] OriginalSkeleton = new StoreTransform[k_NumSkeletonJoints];
+    StoreTransform[] StoredSkeleton = new StoreTransform[k_NumSkeletonJoints];
     //HumanBoneController OriginalSkeleton;
 
-    Transform[] NewSkeleton = new Transform[k_NumSkeletonJoints];
+    //Transform[] NewSkeleton = new Transform[k_NumSkeletonJoints];
+
+    bool[] PercentOfMatch = new bool[k_NumSkeletonJoints];
 
 
     public ARHumanBodyManager HumanBodyManagers
@@ -137,6 +135,28 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             humanBodyManager.humanBodiesChanged -= OnHumanBodiesChanged;
     }
 
+    private void Update()
+    {
+        bool result = false;
+
+        if (ButtonClicked == true)
+        {
+            result = CompareAlgorithm();
+
+            if(result == true)
+            {
+                //캡쳐!
+            }
+            else
+            {
+                //건너뛰기
+            }
+        }
+        else Debug.LogWarning("CaptureButton isn't Pushing");
+
+        HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" CompareResult = " + result.ToString() + ", MatchingJoint" + compareNum.ToString();
+    }
+
     void Awake()
     {
         dismissButton.onClick.AddListener(Dismiss);
@@ -149,26 +169,52 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         //좌표 저장 시 사용할 버튼 활성화
         CaptureButton.onClick.AddListener(CaptureFunction);
     }
-    //좌표 저장 시 사용할 함수(테스트 용도)
-
-    private int CompareAlgorithm()
+    //=====================================================================================================================
+    // 두 오브젝트를 비교하는 함수
+    private bool CompareAlgorithm()
     {
         compareNum = 0;
-        for (int i=0; i < k_NumSkeletonJoints; i++)
+        bool CompareResult;
+
+        Vector3 DistanceHeapPot = PositionCompare(OriginalSkeleton[1].position, humanBoneController.m_BoneMapping[1].position);
+
+        //StoredSkeleton에 정확히 저장 후 StoredSkeleton을 m_BoneMapping과 일치한 좌표로 옮기는 반복문
+        for (int i = 0; i<k_NumSkeletonJoints; i++)
         {
-           
+            StoredSkeleton[i] = OriginalSkeleton[i].StoreSave().StoreAllWorld();
+            StoredSkeleton[i].position = -1 * (DistanceHeapPot - OriginalSkeleton[i].position);
+            Vector3 JointDistance = StoredSkeleton[i].position - humanBoneController.m_BoneMapping[i].position;
+
+            if (JointDistance.sqrMagnitude < (0.01f)) PercentOfMatch[i] = true;
+            else PercentOfMatch[i] = false;
         }
-        return compareNum;
+
+        foreach (bool MatchResult in PercentOfMatch){
+            if (MatchResult == true) compareNum++;
+            else continue;
+        }
+
+        if (compareNum >= 70) CompareResult = true;
+        else CompareResult = false;
+
+        return CompareResult;
     }
-    
+
+    // 기존의 OriginalSkeleton과 humanBoneController.m_BoneMapping의 좌표 차이를 구해서 그 차이를 반환하는 함수
+    private Vector3 PositionCompare(Vector3 StoreTransformPosition, Vector3 TransformPosition)
+    {
+        return StoreTransformPosition - TransformPosition;
+    }
+
+    //=====================================================================================================================
     private void CaptureFunction()
     {
         if (IsAdded == true)
         {
-            // 확장클래스를 활용해서 위치, 회전, 크기를 Deep copy BY 존시나
+            // 확장클래스를 활용해서 위치, 회전, 크기를 Deep copy
             for (int i=0; i < k_NumSkeletonJoints; i++)
             {
-                originalSkeleton[i] = humanBoneController.m_BoneMapping[i].Save().Position().Rotation().Scale();
+                OriginalSkeleton[i] = humanBoneController.m_BoneMapping[i].Save().AllWorld();
             }
             
             ButtonClicked = true;
@@ -204,18 +250,21 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         {
             //1
             //유사도 비교 알고리즘 사용(향후 수정해야 한다.)
-            //CompareAlgorithm();
+            CompareAlgorithm();
             //HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"SavedPositionArray " + Count.ToString() + " : (" + SavedPositionArray[Count, 0] +
             //    ", " + SavedPositionArray[Count, 1] +
             //    ", " + SavedPositionArray[Count, 2] + ")";
             //HumanBodyTrackerUI.Instance.humanBodyText.text = $"실시간Skeleton " + Count.ToString() + " : " + humanBoneController.m_BoneMapping[Count].position;
 
-            HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"originalSkeleton[" + Count.ToString() + "] : (" + originalSkeleton[Count].position.x +
-                ", " + originalSkeleton[Count].position.y +
-                ", " + originalSkeleton[Count].position.z + ")";
+            HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"OriginalSkeleton[" + Count.ToString() + "] : (" + OriginalSkeleton[Count].position.x +
+                ", " + OriginalSkeleton[Count].position.y +
+                ", " + OriginalSkeleton[Count].position.z + ")";
+
             HumanBodyTrackerUI.Instance.humanBodyText.text = $"humanBoneController[" + Count.ToString() + "] : " + humanBoneController.m_BoneMapping[Count].position;
 
-            HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" Index :  {(float)compareNum / 91}" + " //Threshold : " + compareNum + "/91";
+            //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" StoreSkeleton[" + Count.ToString() + "] : (" + StoredSkeleton[Count].position.x +
+            //    ", " + StoredSkeleton[Count].position.y +
+            //    ", " + StoredSkeleton[Count].position.z + ")";
         }
         if (Count % 2 == 0)
         {
@@ -280,7 +329,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
                 //$"LocalPosition: {humanBoneController.transform.localPosition}";
                 //HumanBodyTrackerUI.Instance.humanBodyText.text = $" toggle.activeSelf : {toggleupdate.gameObject.activeSelf}";
                 //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" buttonClicked :  {ButtonClicked}";
-                HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" Index :  {(float)compareNum / 91}" + " //Threshold : " + compareNum + "/91";
+                //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" Index :  {(float)compareNum / 91}" + " //Threshold : " + compareNum + "/91";
             }
 
         }
@@ -298,7 +347,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
                 //         $"LocalPosition: {this.gameObject.transform.localPosition}";
                 //HumanBodyTrackerUI.Instance.humanBodyText.text = $" toggle.activeSelf : {toggleupdate.gameObject.activeSelf}";
                 //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" buttonClicked :  {ButtonClicked}";
-                HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" Index :  {(float)compareNum / 91}" + " //Threshold : " + compareNum + "/91";
+                //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" Index :  {(float)compareNum / 91}" + " //Threshold : " + compareNum + "/91";
 
 
 
@@ -321,19 +370,30 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
 }
 
+//StoreTransform 클래스 부분
+//=====================================================================================================================
 public class StoreTransform
 {
     private Transform m_Transform;
     public Vector3 position;
+    public Vector3 localPosition;
     public Quaternion rotation;
+    public Quaternion localRotation;
     public Vector3 localScale;
+
+    private StoreTransform m_StoreTransform;
+    //public Vector3 Storeposition;
+    //public Vector3 Storelocalosition;
+    //public Quaternion Storerotation;
+    //public Vector3 StorelocalScale;
+
     public StoreTransform(Transform aTransform)
     {
         m_Transform = aTransform;
     }
     public StoreTransform LocalPosition()
     {
-        position = m_Transform.localPosition;
+        localPosition = m_Transform.localPosition;
         return this;
     }
     public StoreTransform Position()
@@ -343,7 +403,7 @@ public class StoreTransform
     }
     public StoreTransform LocalRotation()
     {
-        rotation = m_Transform.localRotation;
+        localRotation = m_Transform.localRotation;
         return this;
     }
     public StoreTransform Rotation()
@@ -364,6 +424,46 @@ public class StoreTransform
     {
         return Position().Rotation().Scale();
     }
+
+    //=====================================================================================================================
+
+    public StoreTransform(StoreTransform aTransform)
+    {
+        m_StoreTransform = aTransform;
+    }
+    public StoreTransform StoreLocalPosition()
+    {
+        localPosition = m_StoreTransform.localPosition;
+        return this;
+    }
+    public StoreTransform StorePosition()
+    {
+        position = m_StoreTransform.position;
+        return this;
+    }
+    public StoreTransform StoreLocalRotation()
+    {
+        rotation = m_StoreTransform.localRotation;
+        return this;
+    }
+    public StoreTransform StoreRotation()
+    {
+        rotation = m_StoreTransform.rotation;
+        return this;
+    }
+    public StoreTransform StoreScale()
+    {
+        localScale = m_StoreTransform.localScale;
+        return this;
+    }
+    public StoreTransform StoreAllLocal()
+    {
+        return StoreLocalPosition().StoreLocalRotation().StoreScale();
+    }
+    public StoreTransform StoreAllWorld()
+    {
+        return StorePosition().StoreRotation().StoreScale();
+    }
 }
 
 
@@ -376,5 +476,13 @@ public static class TransformSerializationExtension
         return new StoreTransform(aTransform);
     }
 
+    public static StoreTransform StoreSave(this StoreTransform aTransform)
+    {
+        return new StoreTransform(aTransform);
+    }
 
+    //public static StoreTransform Distance(this Transform dTransform)
+    //{           
+    //    return new StoreTransform
+    //}
 }
