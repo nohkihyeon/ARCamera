@@ -1,14 +1,10 @@
-﻿using UnityEngine.XR.ARFoundation;
-using UnityEngine;
-using UnityEngine.XR.ARSubsystems;
+﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System;
 
-//third excute
-
-public class HumanBoneController : MonoBehaviour
+public class FindJointNumber : MonoBehaviour
 {
-    // 3D joint skeleton
     public enum JointIndices
     {
         Invalid = -1,
@@ -105,116 +101,21 @@ public class HumanBoneController : MonoBehaviour
         RightHandThumbEnd = 90, // parent: RightHandThumb2 [89]
     }
 
-    const int k_NumSkeletonJoints = 91;
-
-    public static HumanBoneController instance;
-
-
-    [SerializeField]
-    [Tooltip("The root bone of the skeleton.")]
-    Transform m_SkeletonRoot;
-    StoreTransform Store_m_SkeletonRoot;
-
-    /// <summary>
-    /// Get/Set the root bone of the skeleton.
-    /// </summary>
-    public Transform skeletonRoot
-    {
-        get
-        {
-            return m_SkeletonRoot;
-        }
-        set
-        {
-            m_SkeletonRoot = value;
-        }
-    }
-
-    public StoreTransform StoreskeletonRoot
-    {
-        get
-        {
-            return Store_m_SkeletonRoot;
-        }
-        set
-        {
-            Store_m_SkeletonRoot = value;
-        }
-    }
-
-    public Transform[] m_BoneMapping = new Transform[k_NumSkeletonJoints];
-    public StoreTransform[] Store_m_BoneMapping = new StoreTransform[k_NumSkeletonJoints];
-
-    public void InitializeSkeletonJoints()
-    {
-        // Walk through all the child joints in the skeleton and
-        // store the skeleton joints at the corresponding index in the m_BoneMapping array.
-        // This assumes that the bones in the skeleton are named as per the
-        // JointIndices enum above.
-        Queue<Transform> nodes = new Queue<Transform>();
-        nodes.Enqueue(m_SkeletonRoot);
-        while (nodes.Count > 0)
-        {
-            Transform next = nodes.Dequeue();
-            for (int i = 0; i < next.childCount; ++i)
-            {
-                nodes.Enqueue(next.GetChild(i));
-            }
-            ProcessJoint(next);
-        }
-    }
-
-
-
-    public void ApplyBodyPose(ARHumanBody body, Vector3 offset)
-    {
-        var joints = body.joints;
-        if (!joints.IsCreated)
-            return;
-
-        for (int i = 0; i < k_NumSkeletonJoints; ++i)
-        {
-            XRHumanBodyJoint joint = joints[i];
-            var bone = m_BoneMapping[i];
-            if (bone != null)
-            {
-                bone.transform.localPosition = joint.localPose.position + offset;
-                bone.transform.localRotation = joint.localPose.rotation;
-            }
-        }
-    }
-
-
-
-    void ProcessJoint(Transform joint)
-    {
-        int index = GetJointIndex(joint.name);
-        if (index >= 0 && index < k_NumSkeletonJoints)
-        {
-            m_BoneMapping[index] = joint;
-        }
-        else
-        {
-            Debug.LogWarning($"{joint.name} was not found.");
-        }
-    }
-
-
-    // Returns the integer value corresponding to the JointIndices enum value
-    // passed in as a string.
-    public int GetJointIndex(string jointName)
-    {
-        JointIndices val;
-        if (Enum.TryParse(jointName, out val))
-        {
-            return (int)val;
-        }
-        return -1;
-    }
-
     public int GetJoint(string jointName)
     {
         JointIndices joint = (JointIndices)Enum.Parse(typeof(JointIndices), jointName);
         return (int)joint;
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 }

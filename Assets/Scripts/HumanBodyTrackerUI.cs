@@ -11,6 +11,7 @@ using UnityEngine.XR.ARSubsystems;
 public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 {
     HumanBoneController humanBoneController;
+
     int Count = 0;
     int compareNum = 0;
 
@@ -79,6 +80,9 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     [SerializeField]
     private Toggle toggleupdate;
 
+    [SerializeField]
+    private Toggle toggletracking;
+
     bool toggleBool = true;
 
     const int k_NumSkeletonJoints = 91; // 조인트 수를 나타내는 값
@@ -98,12 +102,21 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     //Transform[] OriginalSkeleton = new Transform[k_NumSkeletonJoints];
     StoreTransform[] OriginalSkeleton = new StoreTransform[k_NumSkeletonJoints];
+    Transform[] Children;
+
     StoreTransform[] StoredSkeleton = new StoreTransform[k_NumSkeletonJoints];
     //HumanBoneController OriginalSkeleton;
 
     //Transform[] NewSkeleton = new Transform[k_NumSkeletonJoints];
 
     bool[] PercentOfMatch = new bool[k_NumSkeletonJoints];
+
+    public GameObject UISelect_Content;
+
+    //public GameObject testImage;
+    GameObject CapturedPoseCharacter;
+
+    
 
 
     public ARHumanBodyManager HumanBodyManagers
@@ -137,6 +150,9 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     private void Update()
     {
+        HumanBodyTrackerUI.Instance.humanBodyText.text = $" ButtonState is " + ButtonClicked;
+
+
         bool result = false;
 
         if (ButtonClicked == true)
@@ -165,6 +181,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         toggleDebug.onValueChanged.AddListener(ToggleDebugging);
         toggleupdate.onValueChanged.AddListener(ToggleBoolFunc);
         selectButton.onClick.AddListener(SelectEnableButton);
+        toggletracking.onValueChanged.AddListener(SkeletonOnOff);
 
         //좌표 저장 시 사용할 버튼 활성화
         CaptureButton.onClick.AddListener(CaptureFunction);
@@ -211,20 +228,91 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     {
         if (IsAdded == true)
         {
+
+            //Children = humanBoneController.GetComponentsInChildren<Transform>();
+            //StoreJointName(Children);
+
+            CapturedPoseCharacter = Instantiate(SkeletonPrefab);
+            Children = CapturedPoseCharacter.GetComponentsInChildren<Transform>();
+            
+
             // 확장클래스를 활용해서 위치, 회전, 크기를 Deep copy
             for (int i=0; i < k_NumSkeletonJoints; i++)
             {
                 OriginalSkeleton[i] = humanBoneController.m_BoneMapping[i].Save().AllWorld();
+                
             }
-            
+            //StoreJointName(Children);
+            CreateStoredSkeleton(Children);
+            //Destroy(humanBoneController.gameObject);
+            //humanBoneController.gameObject.SetActive(false);
             ButtonClicked = true;
+            HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"ButtonClicked is true";
         }
         else
         {
             Debug.LogWarning("Not Saved the Object");
         }
-
     }
+    //private void StoreJointName(Transform[] tra)
+    //{
+    //    int ChildCount = 0;
+    //    int IndexCount = 0;
+    //    foreach (var child in tra)
+    //    {
+    //        if (child.name == transform.name)
+    //            return;
+    //        else if (ChildCount >= 7 && IndexCount < 91)
+    //        {
+    //            JointName[IndexCount] = child.name.ToString();
+    //            IndexCount++;
+    //        }
+    //        ChildCount++;
+    //    }
+    //}
+
+    private void CreateStoredSkeleton(Transform[] trans)    
+    {
+        int ChildCount = 0;
+        int IndexCount = 0;
+        int JointIndex = 0;
+
+        foreach (var child in trans)
+        {
+            if (child.name == transform.name)
+                return;
+
+            else if (ChildCount >= 7 && IndexCount < 91)
+            {
+                HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"JointIndex : " + JointIndex;
+                //JointIndex = HumanBoneController.instance.GetJoint(child.name);
+                JointIndex = GameObject.Find("AR Human Body Tracker").GetComponent<FindJointNumber>().GetJoint(child.name);
+                child.transform.position = OriginalSkeleton[JointIndex].position;
+                child.transform.rotation = OriginalSkeleton[JointIndex].rotation;
+                IndexCount++;
+                //if (JointIndex == 46)
+                //    break;
+            }
+            
+            ChildCount++;
+            HumanBodyTrackerUI.Instance.humanBodyText.text = $" NotEndforeach, ChildCount = " +ChildCount + ", IndexCount : " + IndexCount;
+        }
+        HumanBodyTrackerUI.Instance.humanBodyText.text = $" Endforeach";
+    }
+
+    private void SkeletonOnOff(bool value)
+    {
+        if (toggleBool == true)
+        {
+            if (value == true)
+                humanBoneController.gameObject.SetActive(true);
+            else if (value == false)
+                humanBoneController.gameObject.SetActive(false);
+        }
+        else
+            Debug.Log("Not Instantiate HumanboneController");
+    }
+
     private void Dismiss() => welcomePanel.SetActive(false);
     private void SelectDismiss() => UISelect.SetActive(false);
     private void SelectEnableButton() => UISelect.SetActive(true);
@@ -260,7 +348,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
                 ", " + OriginalSkeleton[Count].position.y +
                 ", " + OriginalSkeleton[Count].position.z + ")";
 
-            HumanBodyTrackerUI.Instance.humanBodyText.text = $"humanBoneController[" + Count.ToString() + "] : " + humanBoneController.m_BoneMapping[Count].position;
+            //HumanBodyTrackerUI.Instance.humanBodyText.text = $"humanBoneController[" + Count.ToString() + "] : " + humanBoneController.m_BoneMapping[Count].position;
 
             //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" StoreSkeleton[" + Count.ToString() + "] : (" + StoredSkeleton[Count].position.x +
             //    ", " + StoredSkeleton[Count].position.y +
@@ -341,17 +429,17 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
                 if (skeletonTracker.TryGetValue(humanBody.trackableId, out humanBoneController))
                 {
                     humanBoneController.ApplyBodyPose(humanBody, Vector3.zero);
+
                 }
-
-                //HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"{this.gameObject.name} Position: {this.gameObject.transform.position}\n" +
-                //         $"LocalPosition: {this.gameObject.transform.localPosition}";
-                //HumanBodyTrackerUI.Instance.humanBodyText.text = $" toggle.activeSelf : {toggleupdate.gameObject.activeSelf}";
-                //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" buttonClicked :  {ButtonClicked}";
-                //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" Index :  {(float)compareNum / 91}" + " //Threshold : " + compareNum + "/91";
-
-
-
             }
+
+            //HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"{this.gameObject.name} Position: {this.gameObject.transform.position}\n" +
+            //         $"LocalPosition: {this.gameObject.transform.localPosition}";
+            //HumanBodyTrackerUI.Instance.humanBodyText.text = $" toggle.activeSelf : {toggleupdate.gameObject.activeSelf}";
+            //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" buttonClicked :  {ButtonClicked}";
+            //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" Index :  {(float)compareNum / 91}" + " //Threshold : " + compareNum + "/91";
+
+
         }
 
         foreach (var humanBody in eventArgs.removed)
@@ -363,12 +451,18 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
                 skeletonTracker.Remove(humanBody.trackableId);
             }
         }
-
-        //HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"{this.gameObject.name} Position: {this.gameObject.transform.position}\n" +
-        //    $"LocalPosition: {this.gameObject.transform.localPosition}";
     }
 
+    //HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"{this.gameObject.name} Position: {this.gameObject.transform.position}\n" +
+    //    $"LocalPosition: {this.gameObject.transform.localPosition}";
+
+ 
+
 }
+
+
+
+
 
 //StoreTransform 클래스 부분
 //=====================================================================================================================
@@ -480,9 +574,4 @@ public static class TransformSerializationExtension
     {
         return new StoreTransform(aTransform);
     }
-
-    //public static StoreTransform Distance(this Transform dTransform)
-    //{           
-    //    return new StoreTransform
-    //}
 }
