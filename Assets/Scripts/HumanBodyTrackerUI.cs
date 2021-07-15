@@ -102,6 +102,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     //Transform[] OriginalSkeleton = new Transform[k_NumSkeletonJoints];
     StoreTransform[] OriginalSkeleton = new StoreTransform[k_NumSkeletonJoints];
+
     Transform[] Children;
 
     StoreTransform[] StoredSkeleton = new StoreTransform[k_NumSkeletonJoints];
@@ -113,10 +114,9 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     public GameObject UISelect_Content;
 
-    //public GameObject testImage;
-    GameObject CapturedPoseCharacter;
+    public GameObject CapturedPoseCharacter;
 
-    
+
 
 
     public ARHumanBodyManager HumanBodyManagers
@@ -234,7 +234,6 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
             CapturedPoseCharacter = Instantiate(SkeletonPrefab);
             Children = CapturedPoseCharacter.GetComponentsInChildren<Transform>();
-            
 
             // 확장클래스를 활용해서 위치, 회전, 크기를 Deep copy
             for (int i=0; i < k_NumSkeletonJoints; i++)
@@ -242,41 +241,25 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
                 OriginalSkeleton[i] = humanBoneController.m_BoneMapping[i].Save().AllWorld();
                 
             }
-            //StoreJointName(Children);
+            HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"access Children";
             CreateStoredSkeleton(Children);
-            //Destroy(humanBoneController.gameObject);
-            //humanBoneController.gameObject.SetActive(false);
+            HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"CreateStoredSkeleton is true";
             ButtonClicked = true;
             HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"ButtonClicked is true";
+
         }
         else
         {
             Debug.LogWarning("Not Saved the Object");
         }
     }
-    //private void StoreJointName(Transform[] tra)
-    //{
-    //    int ChildCount = 0;
-    //    int IndexCount = 0;
-    //    foreach (var child in tra)
-    //    {
-    //        if (child.name == transform.name)
-    //            return;
-    //        else if (ChildCount >= 7 && IndexCount < 91)
-    //        {
-    //            JointName[IndexCount] = child.name.ToString();
-    //            IndexCount++;
-    //        }
-    //        ChildCount++;
-    //    }
-    //}
 
     private void CreateStoredSkeleton(Transform[] trans)    
     {
         int ChildCount = 0;
         int IndexCount = 0;
         int JointIndex = 0;
-
+        HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"In the Creat~ Children";
         foreach (var child in trans)
         {
             if (child.name == transform.name)
