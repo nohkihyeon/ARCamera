@@ -36,8 +36,6 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     [Tooltip("The ARHumanBodyManager which will produce body tracking events.")]
     private ARHumanBodyManager humanBodyManager;
     
-    /*=============================================================================================================================*/
-
     [SerializeField]
     [Tooltip("The Human Body Tracker text used for debugging purposes.")]
     public Text humanBodyTrackerText;
@@ -100,15 +98,11 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     private Dictionary<TrackableId, HumanBoneController> skeletonTracker = new Dictionary<TrackableId, HumanBoneController>();
 
-    //Transform[] OriginalSkeleton = new Transform[k_NumSkeletonJoints];
     StoreTransform[] OriginalSkeleton = new StoreTransform[k_NumSkeletonJoints];
 
     Transform[] Children;
 
     StoreTransform[] StoredSkeleton = new StoreTransform[k_NumSkeletonJoints];
-    //HumanBoneController OriginalSkeleton;
-
-    //Transform[] NewSkeleton = new Transform[k_NumSkeletonJoints];
 
     bool[] PercentOfMatch = new bool[k_NumSkeletonJoints];
 
@@ -186,7 +180,6 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         //좌표 저장 시 사용할 버튼 활성화
         CaptureButton.onClick.AddListener(CaptureFunction);
     }
-    //=====================================================================================================================
     // 두 오브젝트를 비교하는 함수
     private bool CompareAlgorithm()
     {
@@ -223,9 +216,9 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         return StoreTransformPosition - TransformPosition;
     }
 
-    //=====================================================================================================================
     private void CaptureFunction()
     {
+        CapturePose();
         if (IsAdded == true)
         {
 
@@ -246,7 +239,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"CreateStoredSkeleton is true";
             ButtonClicked = true;
             HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"ButtonClicked is true";
-
+            
         }
         else
         {
@@ -322,30 +315,18 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             //1
             //유사도 비교 알고리즘 사용(향후 수정해야 한다.)
             CompareAlgorithm();
-            //HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"SavedPositionArray " + Count.ToString() + " : (" + SavedPositionArray[Count, 0] +
-            //    ", " + SavedPositionArray[Count, 1] +
-            //    ", " + SavedPositionArray[Count, 2] + ")";
-            //HumanBodyTrackerUI.Instance.humanBodyText.text = $"실시간Skeleton " + Count.ToString() + " : " + humanBoneController.m_BoneMapping[Count].position;
-
             HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"OriginalSkeleton[" + Count.ToString() + "] : (" + OriginalSkeleton[Count].position.x +
                 ", " + OriginalSkeleton[Count].position.y +
                 ", " + OriginalSkeleton[Count].position.z + ")";
 
-            //HumanBodyTrackerUI.Instance.humanBodyText.text = $"humanBoneController[" + Count.ToString() + "] : " + humanBoneController.m_BoneMapping[Count].position;
-
-            //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" StoreSkeleton[" + Count.ToString() + "] : (" + StoredSkeleton[Count].position.x +
-            //    ", " + StoredSkeleton[Count].position.y +
-            //    ", " + StoredSkeleton[Count].position.z + ")";
         }
         if (Count % 2 == 0)
         {
-            //HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"options.activeSelf";
             toggleOptionsButton.GetComponentInChildren<Text>().text = "Record\nMode";
             options.SetActive(false);
         }
         else if(Count % 2 == 1)
         {
-            //HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"!options.activeSelf";
             toggleOptionsButton.GetComponentInChildren<Text>().text = "X";
             options.SetActive(true);
 
@@ -368,9 +349,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     {
         if (toggleBool == false)
         {
-            //HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"{this.gameObject.name} Position: {this.gameObject.transform.position}\n" +
-            //            $"LocalPosition: {this.gameObject.transform.localPosition}";
-            //HumanBodyTrackerUI.Instance.humanBodyText.text = $" toggle.activeSelf : {toggleupdate.gameObject.activeSelf}";
+
         }
 
         if (toggleBool == true)
@@ -394,13 +373,6 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
                 humanBoneController.InitializeSkeletonJoints();
                 humanBoneController.ApplyBodyPose(humanBody, Vector3.zero);
                 IsAdded = true;
-
-
-                //HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"{this.gameObject.name} {humanBoneController.name} Position: {humanBoneController.transform.position}\n" +
-                //$"LocalPosition: {humanBoneController.transform.localPosition}";
-                //HumanBodyTrackerUI.Instance.humanBodyText.text = $" toggle.activeSelf : {toggleupdate.gameObject.activeSelf}";
-                //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" buttonClicked :  {ButtonClicked}";
-                //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" Index :  {(float)compareNum / 91}" + " //Threshold : " + compareNum + "/91";
             }
 
         }
@@ -415,14 +387,6 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
                 }
             }
-
-            //HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"{this.gameObject.name} Position: {this.gameObject.transform.position}\n" +
-            //         $"LocalPosition: {this.gameObject.transform.localPosition}";
-            //HumanBodyTrackerUI.Instance.humanBodyText.text = $" toggle.activeSelf : {toggleupdate.gameObject.activeSelf}";
-            //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" buttonClicked :  {ButtonClicked}";
-            //HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" Index :  {(float)compareNum / 91}" + " //Threshold : " + compareNum + "/91";
-
-
         }
 
         foreach (var humanBody in eventArgs.removed)
@@ -436,8 +400,34 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         }
     }
 
-    //HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"{this.gameObject.name} Position: {this.gameObject.transform.position}\n" +
-    //    $"LocalPosition: {this.gameObject.transform.localPosition}";
+    private void CapturePose(){
+        int x = 0;
+        int y = 0;
+        float objectCellSize = 40f;
+        // for (int i=0; i < skeletonTracker.Values.Count; i++){
+            // var obj = Instantiate(skeletonTracker.Values.prefab, Vector3.zero, Quaternion.identity, transform);
+        // }
+        foreach(var boneController in skeletonTracker.Values){
+            // RectTransform boneSlotRect = Instantiate().GetComponent<RectTransform>();
+            // boneSlotRect.gameObject.SetActive(true);
+            // boneSlotRect.anchoredPosition = new Vector2(x * objectCellSize, y * objectCellSize);
+
+            // RectTransform boneSlotRect = Instantiate(skeletonPrefab, boneController.transform).GetComponent<RectTransform>();
+            // boneSlotRect.gameObject.SetActive(true);
+            // boneSlotRect.anchoredPosition = new Vector2(x * objectCellSize, y * objectCellSize);
+
+            var newSkeletonGO = Instantiate(skeletonPrefab, boneController.transform);
+
+        humanBoneController = newSkeletonGO.GetComponent<HumanBoneController>();
+        humanBoneController.transform.position = humanBoneController.transform.position +
+                        new Vector3(x * objectCellSize, y * objectCellSize, skeletonOffsetZ);
+        x++;
+        if (x >3){  
+            x =0;
+            y++;
+        }
+    }
+}
 
  
 
@@ -459,10 +449,6 @@ public class StoreTransform
     public Vector3 localScale;
 
     private StoreTransform m_StoreTransform;
-    //public Vector3 Storeposition;
-    //public Vector3 Storelocalosition;
-    //public Quaternion Storerotation;
-    //public Vector3 StorelocalScale;
 
     public StoreTransform(Transform aTransform)
     {
@@ -502,7 +488,6 @@ public class StoreTransform
         return Position().Rotation().Scale();
     }
 
-    //=====================================================================================================================
 
     public StoreTransform(StoreTransform aTransform)
     {
