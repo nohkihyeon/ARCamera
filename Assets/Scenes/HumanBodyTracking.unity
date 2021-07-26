@@ -901,6 +901,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 102932517}
   m_CullTransparentMesh: 0
+--- !u!1 &104015660 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6790265602204177959, guid: 08d30891b6af94a0f95f4f745ef85ba0,
+    type: 3}
+  m_PrefabInstance: {fileID: 131317415}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &131317415
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1321,7 +1327,7 @@ PrefabInstance:
     - target: {fileID: 6790265602204177959, guid: 08d30891b6af94a0f95f4f745ef85ba0,
         type: 3}
       propertyPath: m_Name
-      value: ControlledRobotReferece
+      value: BasicObject
       objectReference: {fileID: 0}
     - target: {fileID: 6790265602204177959, guid: 08d30891b6af94a0f95f4f745ef85ba0,
         type: 3}
@@ -1885,7 +1891,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dcfa89e4959c4e128d7c87403c86c1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UiselectCamera: {fileID: 0}
+  BasicObject: {fileID: 104015660}
   skeletonPrefab: {fileID: 6790265602204177959, guid: d93d5415c51fa49aba66e61ec7b78b34,
     type: 3}
   skeletonOffsetX: 0
@@ -1909,6 +1915,8 @@ MonoBehaviour:
   CaptureButton: {fileID: 672157151}
   UISelect_Content: {fileID: 27888605}
   CapturedPoseCharacter: {fileID: 6408974593869081143, guid: ae36a1cfde34645d09b7f53ba78aec23,
+    type: 3}
+  TestPoseCharacter: {fileID: 6790265602204177959, guid: 08d30891b6af94a0f95f4f745ef85ba0,
     type: 3}
 --- !u!1 &319046894
 GameObject:
@@ -2373,7 +2381,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &626690595
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2661,7 +2669,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &733145344
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4916,7 +4924,7 @@ PrefabInstance:
     - target: {fileID: 9142066932601738499, guid: 33d6a61aff4ab4721a697cc44c1454cd,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 49
+      value: 37
       objectReference: {fileID: 0}
     - target: {fileID: 9142066932601738499, guid: 33d6a61aff4ab4721a697cc44c1454cd,
         type: 3}
