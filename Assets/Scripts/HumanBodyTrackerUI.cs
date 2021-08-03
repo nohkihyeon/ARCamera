@@ -357,12 +357,8 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
                 HumanBodyTrackerUI.Instance.humanBodyText.text = $" NotEndforeach, ChildCount = " + ChildCount + ", IndexCount : " + IndexCount;
                 return;
             }
-            //되라 제발
             child.gameObject.layer = 8;
-            //child.transform.position += new Vector3(100, 1300, -400);
             ChildCount++;
-            //child.transform.Translate(new Vector3()) = new Vector3(1, 1, 1);
-            //HumanBodyTrackerUI.Instance.humanBodyText.text = $" NotEndforeach, ChildCount = " +ChildCount + ", IndexCount : " + IndexCount;
         }
         HumanBodyTrackerUI.Instance.humanBodyText.text = $" Endforeach";
     }
