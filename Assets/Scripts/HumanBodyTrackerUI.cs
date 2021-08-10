@@ -156,35 +156,35 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             humanBodyManager.humanBodiesChanged -= OnHumanBodiesChanged;
     }
 
-    // private void Update()
-    // {
-    //     bool result = false;
+    private void Update()
+    {
+        bool result = false;
 
-    //     if (ButtonClicked == true)
-    //     {
-    //         result = CompareAlgorithm();
+        if (ButtonClicked == true)
+        {
+            result = CompareAlgorithm();
 
-    //         if(result == true)
-    //         {
-    //             //캡쳐!
-    //         }
-    //         else
-    //         {
-    //             //건너뛰기
-    //         }
-    //     }
-    //     else Debug.LogWarning("CaptureButton isn't Pushing");
-    //     // HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = "TestPoseCharacter : " + TestPoseCharacter.transform.position                
-    //     // +"Capsule : " + CapsuleTest.transform.position
-    //     // +"CreatedPosition : " + CapturedPoseCharacter.transform.position;
+            if(result == true)
+            {
+                //캡쳐!
+            }
+            else
+            {
+                //건너뛰기
+            }
+        }
+        else Debug.LogWarning("CaptureButton isn't Pushing");
+        HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = "TestPoseCharacter : " + TestPoseCharacter.transform.position                
+        +"Capsule : " + CapsuleTest.transform.position
+        +"CreatedPosition : " + CapturedPoseCharacter.transform.position;
 
-    //     // HumanBodyTrackerUI.Instance.humanBodyText.text = "TestPoseCharacter : " + TestPoseCharacter.transform.localScale
-    //     // + "Capsule : " + CapsuleTest.transform.localScale
-    //     // + "CreatedPosition : " + CapturedPoseCharacter.transform.localScale;
+        HumanBodyTrackerUI.Instance.humanBodyText.text = "TestPoseCharacter : " + TestPoseCharacter.transform.localScale
+        + "Capsule : " + CapsuleTest.transform.localScale
+        + "CreatedPosition : " + CapturedPoseCharacter.transform.localScale;
 
-    //     HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" CompareResult = " + result.ToString() + ", MatchingJoint" + compareNum.ToString();
-    // }
-    
+        HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" CompareResult = " + result.ToString() + ", MatchingJoint" + compareNum.ToString();
+    }
+
     void Awake()
     {
         dismissButton.onClick.AddListener(Dismiss);
@@ -357,16 +357,11 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
                 HumanBodyTrackerUI.Instance.humanBodyText.text = $" NotEndforeach, ChildCount = " + ChildCount + ", IndexCount : " + IndexCount;
                 return;
             }
-            //되라 제발
             child.gameObject.layer = 8;
-            //child.transform.position += new Vector3(100, 1300, -400);
             ChildCount++;
-            //child.transform.Translate(new Vector3()) = new Vector3(1, 1, 1);
-            //HumanBodyTrackerUI.Instance.humanBodyText.text = $" NotEndforeach, ChildCount = " +ChildCount + ", IndexCount : " + IndexCount;
         }
         HumanBodyTrackerUI.Instance.humanBodyText.text = $" Endforeach";
     }
-    
 
     private void SkeletonOnOff(bool value)
     {
