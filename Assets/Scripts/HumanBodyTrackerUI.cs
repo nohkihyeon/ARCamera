@@ -156,35 +156,6 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             humanBodyManager.humanBodiesChanged -= OnHumanBodiesChanged;
     }
 
-    // private void Update()
-    // {
-    //     bool result = false;
-
-    //     if (ButtonClicked == true)
-    //     {
-    //         result = CompareAlgorithm();
-
-    //         if(result == true)
-    //         {
-    //             //캡쳐!
-    //         }
-    //         else
-    //         {
-    //             //건너뛰기
-    //         }
-    //     }
-    //     else Debug.LogWarning("CaptureButton isn't Pushing");
-    //     // HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = "TestPoseCharacter : " + TestPoseCharacter.transform.position                
-    //     // +"Capsule : " + CapsuleTest.transform.position
-    //     // +"CreatedPosition : " + CapturedPoseCharacter.transform.position;
-
-    //     // HumanBodyTrackerUI.Instance.humanBodyText.text = "TestPoseCharacter : " + TestPoseCharacter.transform.localScale
-    //     // + "Capsule : " + CapsuleTest.transform.localScale
-    //     // + "CreatedPosition : " + CapturedPoseCharacter.transform.localScale;
-
-    //     HumanBodyTrackerUI.Instance.humanBoneControllerText.text = $" CompareResult = " + result.ToString() + ", MatchingJoint" + compareNum.ToString();
-    // }
-    
     void Awake()
     {
         dismissButton.onClick.AddListener(Dismiss);
@@ -248,21 +219,10 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
         if (IsAdded == true)
         {
-            //Children = humanBoneController.GetComponentsInChildren<Transform>();
-            //StoreJointName(Children);
-
             CapturedPoseCharacter = Instantiate(SkeletonPrefab);
             Children = CapturedPoseCharacter.GetComponentsInChildren<Transform>();
             CapturedPoseCharacter.layer = 8;
 
-            //TestObject = Instantiate(ModelSkeleton);
-            //Children2 = TestObject.GetComponentsInChildren<Transform>();
-            //TestObject.transform.localScale = new Vector3(200, 200, 200);
-
-
-            //TestPoseCharacter.gameObject.layer = 8;
-            //CapturedPoseCharacter.transform.position = ModelSkeleton.transform.position + new Vector3(0, 10, 0);
-            //CapturedPoseCharacter.transform.localScale = ModelSkeleton.transform.localScale;
             // 확장클래스를 활용해서 위치, 회전, 크기를 Deep copy
             for (int i=0; i < k_NumSkeletonJoints; i++)
             {
@@ -354,17 +314,13 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             if (JointIndex == 46)
             {
                 ChildCount++;
-                HumanBodyTrackerUI.Instance.humanBodyText.text = $" NotEndforeach, ChildCount = " + ChildCount + ", IndexCount : " + IndexCount;
+                // HumanBodyTrackerUI.Instance.humanBodyText.text = $" NotEndforeach, ChildCount = " + ChildCount + ", IndexCount : " + IndexCount;
                 return;
             }
-            //되라 제발
             child.gameObject.layer = 8;
-            //child.transform.position += new Vector3(100, 1300, -400);
             ChildCount++;
-            //child.transform.Translate(new Vector3()) = new Vector3(1, 1, 1);
-            //HumanBodyTrackerUI.Instance.humanBodyText.text = $" NotEndforeach, ChildCount = " +ChildCount + ", IndexCount : " + IndexCount;
         }
-        HumanBodyTrackerUI.Instance.humanBodyText.text = $" Endforeach";
+        // HumanBodyTrackerUI.Instance.humanBodyText.text = $" Endforeach";
     }
     
 
@@ -494,38 +450,6 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             }
         }
     }
-
-    private void CapturePose(){
-        int x = 0;
-        int y = 0;
-        float objectCellSize = 40f;
-        // for (int i=0; i < skeletonTracker.Values.Count; i++){
-            // var obj = Instantiate(skeletonTracker.Values.prefab, Vector3.zero, Quaternion.identity, transform);
-        // }
-        foreach(var boneController in skeletonTracker.Values){
-            // RectTransform boneSlotRect = Instantiate().GetComponent<RectTransform>();
-            // boneSlotRect.gameObject.SetActive(true);
-            // boneSlotRect.anchoredPosition = new Vector2(x * objectCellSize, y * objectCellSize);
-
-            // RectTransform boneSlotRect = Instantiate(skeletonPrefab, boneController.transform).GetComponent<RectTransform>();
-            // boneSlotRect.gameObject.SetActive(true);
-            // boneSlotRect.anchoredPosition = new Vector2(x * objectCellSize, y * objectCellSize);
-
-            var newSkeletonGO = Instantiate(skeletonPrefab, boneController.transform);
-
-        humanBoneController = newSkeletonGO.GetComponent<HumanBoneController>();
-        humanBoneController.transform.position = humanBoneController.transform.position +
-                        new Vector3(x * objectCellSize, y * objectCellSize, skeletonOffsetZ);
-        x++;
-        if (x >3){  
-            x =0;
-            y++;
-        }
-    }
-}
-
- 
-
 }
 
 
