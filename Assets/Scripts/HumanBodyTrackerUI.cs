@@ -345,7 +345,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     private void ToggleDebugging(bool value)
     {
-        ToggleText(humanBodyText);
+        // ToggleText(humanBodyText);
         ToggleText(humanBodyTrackerText);
         ToggleText(humanBoneControllerText);
 
