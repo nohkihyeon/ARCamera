@@ -234,9 +234,9 @@ RectTransform:
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 20}
+  m_SizeDelta: {x: -17, y: 20}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &18525430
 MonoBehaviour:
@@ -334,6 +334,7 @@ GameObject:
   - component: {fileID: 27888608}
   - component: {fileID: 27888607}
   - component: {fileID: 27888606}
+  - component: {fileID: 27888609}
   m_Layer: 0
   m_Name: UISelectCamera
   m_TagString: MainCamera
@@ -400,12 +401,27 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 27888605}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 722, y: 982, z: -760}
+  m_LocalPosition: {x: 722, y: 982, z: -625}
   m_LocalScale: {x: 2.3806772, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &27888609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27888605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8431d3e91e69b49daa6855d043395517, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UICamera: {fileID: 27888607}
+  RawImageRectTrans: {fileID: 1692531503}
+  RenderToTextureCamera: {fileID: 1737330649}
 --- !u!1 &57679646
 GameObject:
   m_ObjectHideFlags: 0
@@ -1040,7 +1056,7 @@ PrefabInstance:
     - target: {fileID: 2420072047233244816, guid: 08d30891b6af94a0f95f4f745ef85ba0,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 240
+      value: -423
       objectReference: {fileID: 0}
     - target: {fileID: 2420072047233244816, guid: 08d30891b6af94a0f95f4f745ef85ba0,
         type: 3}
@@ -1509,9 +1525,9 @@ RectTransform:
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -17, y: -17}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &185024258
 MonoBehaviour:
@@ -1834,6 +1850,7 @@ GameObject:
   - component: {fileID: 306468483}
   - component: {fileID: 306468484}
   - component: {fileID: 306468482}
+  - component: {fileID: 306468485}
   m_Layer: 0
   m_Name: AR Human Body Tracker
   m_TagString: Untagged
@@ -1907,6 +1924,21 @@ MonoBehaviour:
   TestPoseCharacter: {fileID: 6790265602204177959, guid: 08d30891b6af94a0f95f4f745ef85ba0,
     type: 3}
   CapsuleTest: {fileID: 0}
+--- !u!114 &306468485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 306468481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8431d3e91e69b49daa6855d043395517, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UICamera: {fileID: 1737330649}
+  RawImageRectTrans: {fileID: 1692531503}
+  RenderToTextureCamera: {fileID: 27888607}
 --- !u!1 &319046894
 GameObject:
   m_ObjectHideFlags: 0
@@ -2100,7 +2132,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2232,8 +2264,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1692531503}
   - {fileID: 1918648590}
+  - {fileID: 1692531503}
   - {fileID: 849640088}
   - {fileID: 937905062}
   - {fileID: 1538827043}
@@ -4470,9 +4502,9 @@ RectTransform:
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 0}
+  m_SizeDelta: {x: 20, y: -17}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1083515781
 MonoBehaviour:
@@ -5567,7 +5599,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1692531503
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5586,7 +5618,7 @@ RectTransform:
   - {fileID: 400732418}
   - {fileID: 1834980881}
   m_Father: {fileID: 479541506}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5793,6 +5825,7 @@ GameObject:
   - component: {fileID: 1737330651}
   - component: {fileID: 1737330650}
   - component: {fileID: 1737330654}
+  - component: {fileID: 1737330655}
   m_Layer: 0
   m_Name: AR Camera
   m_TagString: MainCamera
@@ -5916,6 +5949,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   humanBodyText: {fileID: 937905063}
+--- !u!114 &1737330655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1737330648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1791a717da5d84d0881b90a0b5ea170a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fileCounter: 0
+  screenshotKey: 32
 --- !u!1 &1748256945
 GameObject:
   m_ObjectHideFlags: 0
@@ -6109,7 +6156,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -62.5, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1831077913
 MonoBehaviour:
@@ -6331,7 +6378,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -6402,7 +6449,7 @@ RectTransform:
   m_LocalScale: {x: 1.2814609, y: 8.006249, z: 1}
   m_Children: []
   m_Father: {fileID: 479541506}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
