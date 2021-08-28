@@ -87,9 +87,6 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     const int k_NumSkeletonJoints = 91; // 조인트 수를 나타내는 값
 
 
-    public GameObject ModelSkeleton;
-    int CaptureCount = 0;
-
     //오브젝트 좌표 저장할 때 사용할 버튼(테스트 용도)
     [SerializeField]
     private Button CaptureButton;
@@ -105,7 +102,6 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     StoreTransform[] OriginalSkeleton = new StoreTransform[k_NumSkeletonJoints];
 
     Transform[] Children;
-    Transform[] Children2;
 
     StoreTransform[] StoredSkeleton = new StoreTransform[k_NumSkeletonJoints];
 
@@ -114,13 +110,13 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     public GameObject UISelect_Content;
 
     public GameObject CapturedPoseCharacter;
+    public int CaptureCount;
 
     public GameObject TestPoseCharacter;
 
-    public GameObject CapsuleTest;
+    //GameObject SelectedPose;
 
-    GameObject TestObject;
-
+    public Text text1;
     int Xposition = 150;
     int XCount = 1;
     int Yposition = 1300;
@@ -156,6 +152,10 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             humanBodyManager.humanBodiesChanged -= OnHumanBodiesChanged;
     }
 
+    private void Start()
+    {
+        CaptureCount = 1;
+    }
     void Awake()
     {
         dismissButton.onClick.AddListener(Dismiss);
@@ -207,7 +207,6 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     private void CaptureFunction()
     {
-        CaptureCount++;
         //TestObject = Instantiate(SkeletonPrefab, new Vector3(178, 1337, -373), Quaternion.identity);
         //TestObject.transform.localScale = new Vector3(200,200,200);
 
@@ -217,11 +216,15 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         //CapturedPoseCharacter.transform.localScale = new Vector3(200, 200, 200);
         //CapturedPoseCharacter.transform.position = new Vector3(0, 800, -400);
 
-        if (IsAdded == true)
+        if (IsAdded == true && CaptureCount < 10)
         {
+            
             CapturedPoseCharacter = Instantiate(SkeletonPrefab);
+            //GameObject.Find("Canvas").GetComponent<UISelector>().SetObjectTransform(CapturedPoseCharacter, CaptureCount);
+            
+            
             Children = CapturedPoseCharacter.GetComponentsInChildren<Transform>();
-            CapturedPoseCharacter.layer = 8;
+            //CapturedPoseCharacter.layer = 8;
 
             // 확장클래스를 활용해서 위치, 회전, 크기를 Deep copy
             for (int i=0; i < k_NumSkeletonJoints; i++)
@@ -229,6 +232,10 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
                 OriginalSkeleton[i] = humanBoneController.m_BoneMapping[i].Save().AllWorld();
             }
             HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"access Children";
+            GameObject.Find("Canvas").GetComponent<UISelector>().SetObjectTransform(CapturedPoseCharacter.transform, CaptureCount);
+            Transform PPPPP = GameObject.Find("Canvas").GetComponent<UISelector>().ObjectPosition[CaptureCount];
+            text1.text = PPPPP.position.ToString() + "////"+ humanBoneController.transform.position.ToString() + humanBoneController.transform.localScale.ToString();
+            GameObject.Find("Canvas").GetComponent<UISelector>().PoseList[CaptureCount] = CapturedPoseCharacter;
 
             CreateStoredSkeleton(Children);
             TranslateCapturedPoseCharacter();
@@ -239,7 +246,9 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"CaputuredPosedCharacter transform\n" + CapturedPoseCharacter.transform;
             //CapturedPoseCharacter.transform.position = new Vector3(0.05f, -2.45f, 0);
             //CapturedPoseCharacter.layer = 8;
-            
+            //GameObject.Find("Canvas").GetComponent<UISelector>().AddFunc(CapturedPoseCharacter);
+            CapturedPoseCharacter.layer = 8;
+            CaptureCount++;
         }
         else
         {
