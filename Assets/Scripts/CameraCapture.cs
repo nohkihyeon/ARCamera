@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
  
 public class CameraCapture : MonoBehaviour
 {
@@ -8,6 +9,10 @@ public class CameraCapture : MonoBehaviour
     private Button TakePhotoButton;
     public int fileCounter;
     public KeyCode screenshotKey;
+
+    // [SerializeField]
+    // private Camera Camera;
+
     private Camera Camera
     {
         get
@@ -20,6 +25,8 @@ public class CameraCapture : MonoBehaviour
             return _camera;
         }
     }
+
+    [SerializeField]
     private Camera _camera;
     void Awake()
     {
@@ -45,7 +52,7 @@ public class CameraCapture : MonoBehaviour
         RenderTexture.active = Camera.targetTexture;
  
         Camera.Render();
- 
+     
         Texture2D image = new Texture2D(Camera.targetTexture.width, Camera.targetTexture.height);
         image.ReadPixels(new Rect(0, 0, Camera.targetTexture.width, Camera.targetTexture.height), 0, 0);
         image.Apply();
@@ -59,8 +66,12 @@ public class CameraCapture : MonoBehaviour
         // File.WriteAllBytes(Application.dataPath + "/Image/" + fileCounter + ".png", bytes);
 
         // cf2) https://devparklibrary.tistory.com/32
-        Debug.Log(Application.persistentDataPath);
-        File.WriteAllBytes(Application.persistentDataPath +"/Image" +fileCounter + ".png", bytes);
+        // Debug.Log(Application.persistentDataPath);
+        // File.WriteAllBytes(Application.persistentDataPath +"/Image" +fileCounter + ".png", bytes);
+
+        // iOS Mobile
+        string name = "AR Camera" + System.DateTime.Now.ToString("yyyy-mm-dd_HH-mm-ss") +fileCounter + ".png";
+        NativeGallery.SaveImageToGallery(bytes, "AR Camera Assistant picutres", name);
         fileCounter++;
     }
 }
