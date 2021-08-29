@@ -6874,6 +6874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TakePhotoButton: {fileID: 222769408}
+  Canvas: {fileID: 479541502}
   fileCounter: 0
   screenshotKey: 32
   _camera: {fileID: 1737330649}
