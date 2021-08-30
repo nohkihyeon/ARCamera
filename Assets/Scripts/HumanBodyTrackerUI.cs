@@ -36,7 +36,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     [SerializeField]
     [Tooltip("The ARHumanBodyManager which will produce body tracking events.")]
     private ARHumanBodyManager humanBodyManager;
-    
+
     [SerializeField]
     [Tooltip("The Human Body Tracker text used for debugging purposes.")]
     public Text humanBodyTrackerText;
@@ -117,10 +117,20 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     //GameObject SelectedPose;
 
     public Text text1;
+    public Text TestText2;
+
+
     int Xposition = 150;
     int XCount = 1;
     int Yposition = 1300;
     int YCount = 1;
+
+    //public GameObject Position1;
+    //public GameObject Position2;
+    //public GameObject Position3;
+
+
+    public GameObject[] PositionArray = new GameObject[9];
 
 
     public ARHumanBodyManager HumanBodyManagers
@@ -155,6 +165,9 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     private void Start()
     {
         CaptureCount = 1;
+        //PositionArray[0] = Position1;
+        //PositionArray[1] = Position2;
+        //PositionArray[2] = Position3;
     }
     void Awake()
     {
@@ -178,7 +191,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         Vector3 DistanceHeapPot = PositionCompare(OriginalSkeleton[1].position, humanBoneController.m_BoneMapping[1].position);
 
         //StoredSkeleton에 정확히 저장 후 StoredSkeleton을 m_BoneMapping과 일치한 좌표로 옮기는 반복문
-        for (int i = 0; i<k_NumSkeletonJoints; i++)
+        for (int i = 0; i < k_NumSkeletonJoints; i++)
         {
             StoredSkeleton[i] = OriginalSkeleton[i].StoreSave().StoreAllWorld();
             StoredSkeleton[i].position = -1 * (DistanceHeapPot - OriginalSkeleton[i].position);
@@ -188,7 +201,8 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             else PercentOfMatch[i] = false;
         }
 
-        foreach (bool MatchResult in PercentOfMatch){
+        foreach (bool MatchResult in PercentOfMatch)
+        {
             if (MatchResult == true) compareNum++;
             else continue;
         }
@@ -218,28 +232,33 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
         if (IsAdded == true && CaptureCount < 10)
         {
-            
+
             CapturedPoseCharacter = Instantiate(SkeletonPrefab);
             //GameObject.Find("Canvas").GetComponent<UISelector>().SetObjectTransform(CapturedPoseCharacter, CaptureCount);
-            
-            
+
+
             Children = CapturedPoseCharacter.GetComponentsInChildren<Transform>();
             //CapturedPoseCharacter.layer = 8;
 
             // 확장클래스를 활용해서 위치, 회전, 크기를 Deep copy
-            for (int i=0; i < k_NumSkeletonJoints; i++)
+            for (int i = 0; i < k_NumSkeletonJoints; i++)
             {
                 OriginalSkeleton[i] = humanBoneController.m_BoneMapping[i].Save().AllWorld();
             }
             HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"access Children";
             GameObject.Find("Canvas").GetComponent<UISelector>().SetObjectTransform(CapturedPoseCharacter.transform, CaptureCount);
-            Transform PPPPP = GameObject.Find("Canvas").GetComponent<UISelector>().ObjectPosition[CaptureCount];
-            text1.text = PPPPP.position.ToString() + "////"+ humanBoneController.transform.position.ToString() + humanBoneController.transform.localScale.ToString();
+            //Transform PPPPP = GameObject.Find("Canvas").GetComponent<UISelector>().ObjectPosition[CaptureCount];
+            //text1.text = PPPPP.position.ToString() + "////"+ humanBoneController.transform.position.ToString() + humanBoneController.transform.localScale.ToString();
             GameObject.Find("Canvas").GetComponent<UISelector>().PoseList[CaptureCount] = CapturedPoseCharacter;
+
 
             CreateStoredSkeleton(Children);
             TranslateCapturedPoseCharacter();
             //CreateStoredSkeleton(Children2);
+
+            //Transform PPPPP = GameObject.Find("Canvas").GetComponent<UISelector>().ObjectPosition[CaptureCount];
+            text1.text = CapturedPoseCharacter.transform.position.ToString() + "////" + CapturedPoseCharacter.transform.localScale.ToString();
+            //TestText2.text = CapturedPoseCharacter.transform.localPosition.ToString() + " //// " + Position1.transform.position.ToString();
 
             ButtonClicked = true;
             // CapturedPoseCharacter.transform.parent = BasicObject.transform;
@@ -254,71 +273,45 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         {
             Debug.LogWarning("Not Saved the Object");
         }
-        
+
         // CapturePose();
     }
 
     private void TranslateCapturedPoseCharacter()
     {
         CapturedPoseCharacter.transform.localScale += new Vector3(200, 200, 200);
-        switch (YCount)
-        {
-            case 1:
-                Yposition = 1300;
-                break;
-            case 2:
-                Yposition = 800;
-                break;
-            case 3:
-                Yposition = 300;
-                break;
-        }
-        switch (XCount)
-        {
-            case 1:
-                Xposition = 150;
-                XCount = 2;
-                break;
-            case 2:
-                Xposition = 550;
-                XCount = 3;
-                break;
-            case 3:
-                Xposition = 900;
-                XCount = 1;
-                YCount++;
-                break;
-        }
-        
-
-        CapturedPoseCharacter.transform.position = new Vector3(Xposition, Yposition, -400);
-
+        //CapturedPoseCharacter.transform.position = new Vector3(Xposition, Yposition, -400);
+        CapturedPoseCharacter.transform.position = PositionArray[CaptureCount - 1].transform.position;
+        CapturedPoseCharacter.transform.rotation = PositionArray[0].transform.rotation;
     }
 
-    private void CreateStoredSkeleton(Transform[] trans)    
+    private void CreateStoredSkeleton(Transform[] trans)
     {
         int ChildCount = 0;
         int IndexCount = 0;
         int JointIndex = 0;
         HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"In the Creat~ Children";
+
         foreach (var child in trans)
         {
             if (child.name == transform.name)
                 return;
-            //else if (ChildCount < 7)
-            //{
-            //    child.transform.position += new Vector3(-141, 115, -400);
-            //}
+            else if (ChildCount < 7)
+            {
+                JointIndex = GameObject.Find("AR Human Body Tracker").GetComponent<FindJointNumber>().GetJoint("Root");
+                child.transform.position = OriginalSkeleton[JointIndex].position;
+                child.transform.rotation = OriginalSkeleton[JointIndex].rotation;
+            }
             else if (ChildCount >= 7 && IndexCount < 91)
             {
-                
+
                 //JointIndex = HumanBoneController.instance.GetJoint(child.name);
                 JointIndex = GameObject.Find("AR Human Body Tracker").GetComponent<FindJointNumber>().GetJoint(child.name);
                 child.transform.position = OriginalSkeleton[JointIndex].position;
                 child.transform.rotation = OriginalSkeleton[JointIndex].rotation;
                 IndexCount++;
                 HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"JointIndex : " + JointIndex;
-                
+
             }
             if (JointIndex == 46)
             {
@@ -331,7 +324,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         }
         // HumanBodyTrackerUI.Instance.humanBodyText.text = $" Endforeach";
     }
-    
+
 
     private void SkeletonOnOff(bool value)
     {
@@ -384,12 +377,10 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             toggleOptionsButton.GetComponentInChildren<Text>().text = "Record\nMode";
             options.SetActive(false);
         }
-        else if(Count % 2 == 1)
+        else if (Count % 2 == 1)
         {
             toggleOptionsButton.GetComponentInChildren<Text>().text = "X";
             options.SetActive(true);
-            CapturedPoseCharacter.transform.position = new Vector3(Xposition, 1300, -400);
-            Xposition = Xposition + 100;
         }
     }
     private void ToggleBoolFunc(bool value)

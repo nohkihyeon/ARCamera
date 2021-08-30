@@ -25,7 +25,6 @@ public class UISelector : MonoBehaviour
     private Button CaptureButton;
 
     //public Text TestText1;
-    public Text TestText2;
     int number;
     bool PoseSelectState;
     // Start is called before the first frame update
@@ -43,12 +42,10 @@ public class UISelector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(number > 1)
-            TestText2.text = ObjectPosition[1].position.ToString() + " //// " + SelectedPose.transform.position.ToString() + SelectedPose.transform.localScale.ToString();
     }
     void SelectPoseFunc(int index)
     {
-        if(index == 0)
+        if (index == 0)
         {
             Debug.Log("Zero can't use");
         }
@@ -58,7 +55,7 @@ public class UISelector : MonoBehaviour
             {
                 SelectedPose = Instantiate(PoseList[index]);
                 //SelectedPose.transform.position = ObjectPosition[index].position;
-                SelectedPose.transform.position -=SelectedPose.transform.position;
+                SelectedPose.transform.position -= SelectedPose.transform.position;
                 SelectedPose.transform.localScale = SelectedPose.transform.localScale - new Vector3(200, 200, 200);
                 //TestText2.text = ObjectPosition[index].position.ToString() + " //// "+ SelectedPose.transform.position.ToString() + SelectedPose.transform.localScale.ToString();
                 SelectedPose.gameObject.layer = 0;
@@ -87,10 +84,10 @@ public class UISelector : MonoBehaviour
         UISelectorDd.gameObject.SetActive(PoseSelectState);
     }
     void InitDropDown()
-    {   
+    {
         number = 1;
         PoseSelectState = true;
-        for (int i =0; i < PoseList.Length; i++)
+        for (int i = 0; i < PoseList.Length; i++)
         {
             PoseList[i] = null;
         }
