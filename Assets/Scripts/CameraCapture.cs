@@ -35,9 +35,14 @@ public class CameraCapture : MonoBehaviour
     private void TakePhoto()
     {
         Debug.Log("TakePhoto()" + fileCounter);
-        // Capture();
         Canvas.SetActive(false);
-        Screenshot();
+        Invoke("Screenshot", 0.4f);
+        // Screenshot();
+    }
+
+    private void setActiveTrue()
+    {
+        Canvas.SetActive(true);
     }
     
     private void Screenshot()
@@ -51,7 +56,8 @@ public class CameraCapture : MonoBehaviour
         NativeGallery.SaveImageToGallery(bytes, "AR Camera", name);
         fileCounter++;
         Destroy(texture);
-        Canvas.SetActive(true);
+        // Canvas.SetActive(true);
+        Invoke("setActiveTrue", 1f);
         Debug.Log("Canvas True");
     }
 }
