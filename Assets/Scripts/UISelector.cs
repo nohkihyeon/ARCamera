@@ -18,11 +18,14 @@ public class UISelector : MonoBehaviour
 
     public Transform[] ObjectPosition = new Transform[10];
 
+    public GameObject ARPosition;
+
     public GameObject test1;
-    GameObject test2;
 
     [SerializeField]
     private Button CaptureButton;
+
+    public Camera ARCamera;
 
     //public Text TestText1;
     int number;
@@ -57,13 +60,14 @@ public class UISelector : MonoBehaviour
                 //SelectedPose.transform.position = ObjectPosition[index].position;
                 SelectedPose.transform.position -= SelectedPose.transform.position;
                 SelectedPose.transform.localScale = SelectedPose.transform.localScale - new Vector3(200, 200, 200);
+                SelectedPose.transform.position = ARPosition.transform.position;
+                SelectedPose.transform.rotation = ARCamera.transform.rotation;
                 //TestText2.text = ObjectPosition[index].position.ToString() + " //// "+ SelectedPose.transform.position.ToString() + SelectedPose.transform.localScale.ToString();
                 SelectedPose.gameObject.layer = 0;
                 //SelectedPose.transform.position = new Vector3(0,0,0);
                 //SelectedPose.transform.position = ObjectPosition[index].position;
                 //SelectedPose.transform.localScale = new Vector3(1, 1, 1);
                 //SelectedPose.transform.localScale = ObjectPosition[index].localScale;
-                test2 = Instantiate(test1, ObjectPosition[index]);
                 PoseSelectState = false;
                 UISelectorDd.gameObject.SetActive(PoseSelectState);
                 DestroyButton.gameObject.SetActive(!PoseSelectState);
