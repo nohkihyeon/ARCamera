@@ -125,9 +125,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     int Yposition = 1300;
     int YCount = 1;
 
-    //public GameObject Position1;
-    //public GameObject Position2;
-    //public GameObject Position3;
+    bool CaptureUse = true;
 
 
     public GameObject[] PositionArray = new GameObject[9];
@@ -230,7 +228,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         //CapturedPoseCharacter.transform.localScale = new Vector3(200, 200, 200);
         //CapturedPoseCharacter.transform.position = new Vector3(0, 800, -400);
 
-        if (IsAdded == true && CaptureCount < 10)
+        if (IsAdded == true && CaptureCount < 10 &&  CaptureUse == true)
         {
 
             CapturedPoseCharacter = Instantiate(SkeletonPrefab);
@@ -330,11 +328,14 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     {
         if (toggleBool == true)
         {
-            if (value == true)
-                humanBoneController.gameObject.SetActive(true);
+            if (value == true) {
+                CaptureUse = true;
+                humanBoneController.gameObject.SetActive(CaptureUse);
+            }
             else if (value == false)
             {
-                humanBoneController.gameObject.SetActive(false);
+                CaptureUse = false;
+                humanBoneController.gameObject.SetActive(CaptureUse);
             }
 
             else
