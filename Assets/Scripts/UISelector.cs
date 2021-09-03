@@ -1,4 +1,5 @@
-﻿using System.Collections;
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +17,7 @@ public class UISelector : MonoBehaviour
     public GameObject UISelect;
 
     Dropdown.OptionData OpList;
+
 
     public Transform[] ObjectPosition = new Transform[10];
 
@@ -36,6 +38,24 @@ public class UISelector : MonoBehaviour
 
     bool isMoving;
     public bool isSelected;
+    SerializeField]
+    private Button ButtonOne;
+    [SerializeField]
+    private Button ButtonTwo;
+    [SerializeField]
+    private Button ButtonThree;
+    [SerializeField]
+    private Button ButtonFour;
+    [SerializeField]
+    private Button ButtonFive;
+    [SerializeField]
+    private Button ButtonSix;
+    [SerializeField]
+    private Button ButtonSeven;
+    [SerializeField]
+    private Button ButtonEight;
+    [SerializeField]
+    private Button ButtonNine;
 
     Vector3 OriginalSize;
     Quaternion OriginalRotation;
@@ -52,8 +72,32 @@ public class UISelector : MonoBehaviour
     void Start()
     {
         InitDropDown();
+        ButtonOne.onClick.AddListener(UiSelectButtonClicked);
+        ButtonTwo.onClick.AddListener(UiSelectButtonClicked);
+        ButtonThree.onClick.AddListener(UiSelectButtonClicked);
+        ButtonFour.onClick.AddListener(UiSelectButtonClicked);
+        ButtonFive.onClick.AddListener(UiSelectButtonClicked);
+        ButtonSix.onClick.AddListener(UiSelectButtonClicked);
+        ButtonSeven.onClick.AddListener(UiSelectButtonClicked);
+        ButtonEight.onClick.AddListener(UiSelectButtonClicked);
+        ButtonNine.onClick.AddListener(UiSelectButtonClicked);
         //ARCamera.cullingMask = ~(1 << 8);
     }
+    private void UiSelectButtonClicked()
+    {
+        var go = EventSystem.current.currentSelectedGameObject;
+        if(go !=null)
+        {
+            Debug.Log("Clicked on : " + go.name);
+            int num = (int)char.GetNumericValue(go.name.ToCharArray()[7]);
+            SelectPoseFunc(num);
+        }
+            
+        else
+            Debug.Log("currentSelect Gameobject is null");
+
+    }
+
     private void Awake()
     {
         UISelectorDd.onValueChanged.AddListener(SelectPoseFunc);
@@ -61,6 +105,7 @@ public class UISelector : MonoBehaviour
         CaptureButton.onClick.AddListener(AddFunc);
         PoseScaler.onValueChanged.AddListener(ControllPoseScaler);
         PoseRotator.onValueChanged.AddListener(ControllPoseRotator);
+
     }
 
     // Update is called once per frame
@@ -79,6 +124,7 @@ public class UISelector : MonoBehaviour
 
         }
     }
+
     void SelectPoseFunc(int index)
     {
         if (index == 0)
@@ -120,6 +166,7 @@ public class UISelector : MonoBehaviour
             }
         }
     }
+
     public void InitializeTransform(HumanBoneController human)
     {
 
@@ -178,6 +225,7 @@ public class UISelector : MonoBehaviour
             ChildCount++;
         }
     }
+
     public void SetObjectTransform(Transform input, int CaptureCount)
     {
         ObjectPosition[CaptureCount] = input;
