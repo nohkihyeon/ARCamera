@@ -4,51 +4,96 @@ using UnityEngine;
 using UnityEngine.UI;
 public class ObjectTouchEvent : MonoBehaviour
 {
-
+    [SerializeField]
+    public Dropdown UISelectorDropdown;
+    [SerializeField]
+    private Button ButtonOne;
+    [SerializeField]
+    private Button ButtonTwo;
+    [SerializeField]
+    private Button ButtonThree;
+    [SerializeField]
+    private Button ButtonFour;
+    [SerializeField]
+    private Button ButtonFive;
+    [SerializeField]
+    private Button ButtonSix;
+    [SerializeField]
+    private Button ButtonSeven;
+    [SerializeField]
+    private Button ButtonEight;
+    [SerializeField]
+    private Button ButtonNine;
+    
     [SerializeField]
     [Tooltip("The Human Body text used for debugging purposes.")]
     public Text humanBodyText;
-    private int layerMask;
     
    
     void Start()
     {
-        // 레이어 인덱스가 8인 레이어마스크 변수에 대입
-        // 8만큼 Bit Shift
         humanBodyText.gameObject.SetActive(true);
-        layerMask = 1 << 8;
+        ButtonOne.onClick.AddListener(ObjectOne);
+        ButtonTwo.onClick.AddListener(ObjectTwo);
+        ButtonThree.onClick.AddListener(ObjectThree);
+        ButtonFour.onClick.AddListener(ObjectFour);
+        ButtonFive.onClick.AddListener(ObjectFive);
+        ButtonSix.onClick.AddListener(ObjectSix);
+        ButtonSeven.onClick.AddListener(ObjectSeven);
+        ButtonEight.onClick.AddListener(ObjectEight);
+        ButtonNine.onClick.AddListener(ObjectNine);
+        
         
     }
-    // public static Camera MainCamera;
-    // Update is called once per frame d
     void Update()
     {
-        ClickDetect();
+
     }
 
-    private void ClickDetect()
+    private void ObjectOne()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            // Debug.Log("GetMouseButton0");
-            
-            Debug.Log("Camera " + Camera.main.gameObject);
-            humanBodyText.GetComponentInChildren<Text>().text = "클릭 되기 전 \n충돌체 이름 : "  + "\n충돌거리 : " ;
-           
-            RaycastHit hit_info;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            // Debug.Log(Physics.Raycast(ray, out hit_info, Mathf.Infinity));
-            // Debug.Log(ray);
-             
-            if (Physics.Raycast(ray, out hit_info, Mathf.Infinity))
-            {
-                Debug.Log("충돌체 이름 : " + hit_info.collider.gameObject.name);
-                Debug.Log("충돌거리 : " + hit_info.distance);
-                Debug.Log("법선벡터 : " + hit_info.normal);
-                humanBodyText.GetComponentInChildren<Text>().text = "충돌체 이름 : " + hit_info.collider.gameObject.name + "\n충돌거리 : " + hit_info.distance + "\n법선벡터 : " + hit_info.normal;
-            }
-            Debug.DrawRay(ray.origin, ray.direction * 1000f, Color.red);
-            
-        }
+        Debug.Log("obj1");
+        UISelectorDropdown.value = 1;
+        humanBodyText.GetComponentInChildren<Text>().text = "obj1";
+    }
+    private void ObjectTwo()
+    {
+        UISelectorDropdown.value = 2;
+        Debug.Log("obj2");
+    }
+    private void ObjectThree()
+    {
+        UISelectorDropdown.value = 3;
+        Debug.Log("obj3");
+    }
+    private void ObjectFour()
+    {
+        UISelectorDropdown.value = 4;
+        Debug.Log("obj4");
+    }
+    private void ObjectFive()
+    {
+        UISelectorDropdown.value = 5;
+        Debug.Log("obj5");
+    }
+    private void ObjectSix()
+    {
+        UISelectorDropdown.value = 6;
+        Debug.Log("obj6");
+    }
+    private void ObjectSeven()
+    {
+        UISelectorDropdown.value = 7;
+        Debug.Log("obj7");
+    }
+    private void ObjectEight()
+    {
+        UISelectorDropdown.value = 8;
+        Debug.Log("obj8");
+    }
+    private void ObjectNine()
+    {
+        UISelectorDropdown.value = 9;
+        Debug.Log("obj9");
     }
 }

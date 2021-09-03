@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class UISelector : MonoBehaviour
 {
@@ -35,6 +36,24 @@ public class UISelector : MonoBehaviour
 
     bool isMoving;
     bool isSelected;
+    [SerializeField]
+    private Button ButtonOne;
+    [SerializeField]
+    private Button ButtonTwo;
+    [SerializeField]
+    private Button ButtonThree;
+    [SerializeField]
+    private Button ButtonFour;
+    [SerializeField]
+    private Button ButtonFive;
+    [SerializeField]
+    private Button ButtonSix;
+    [SerializeField]
+    private Button ButtonSeven;
+    [SerializeField]
+    private Button ButtonEight;
+    [SerializeField]
+    private Button ButtonNine;
 
     Vector3 OriginalSize;
     Quaternion OriginalRotation;
@@ -46,7 +65,29 @@ public class UISelector : MonoBehaviour
     void Start()
     {
         InitDropDown();
-        
+        ButtonOne.onClick.AddListener(UiSelectButtonClicked);
+        ButtonTwo.onClick.AddListener(UiSelectButtonClicked);
+        ButtonThree.onClick.AddListener(UiSelectButtonClicked);
+        ButtonFour.onClick.AddListener(UiSelectButtonClicked);
+        ButtonFive.onClick.AddListener(UiSelectButtonClicked);
+        ButtonSix.onClick.AddListener(UiSelectButtonClicked);
+        ButtonSeven.onClick.AddListener(UiSelectButtonClicked);
+        ButtonEight.onClick.AddListener(UiSelectButtonClicked);
+        ButtonNine.onClick.AddListener(UiSelectButtonClicked);
+    }
+    private void UiSelectButtonClicked()
+    {
+        var go = EventSystem.current.currentSelectedGameObject;
+        if(go !=null)
+        {
+            Debug.Log("Clicked on : " + go.name);
+            int num = (int)char.GetNumericValue(go.name.ToCharArray()[7]);
+            SelectPoseFunc(num);
+        }
+            
+        else
+            Debug.Log("currentSelect Gameobject is null");
+
     }
     private void Awake()
     {
