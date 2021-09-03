@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class UISelector : MonoBehaviour
 {
@@ -38,7 +39,7 @@ public class UISelector : MonoBehaviour
 
     bool isMoving;
     public bool isSelected;
-    SerializeField]
+   [SerializeField]
     private Button ButtonOne;
     [SerializeField]
     private Button ButtonTwo;
