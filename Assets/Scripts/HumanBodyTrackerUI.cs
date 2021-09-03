@@ -130,6 +130,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     public GameObject[] PositionArray = new GameObject[9];
 
+    bool result = false;
 
     public ARHumanBodyManager HumanBodyManagers
     {
@@ -162,11 +163,20 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     private void Start()
     {
+
         CaptureCount = 1;
-        //PositionArray[0] = Position1;
-        //PositionArray[1] = Position2;
-        //PositionArray[2] = Position3;
     }
+    private void Update()
+    {
+        bool IsSelect = GameObject.Find("Canvas").GetComponent<UISelector>().isSelected;
+        //bool result = false;
+        if (IsSelect)
+        {
+            result = CompareAlgorithm();
+        }
+        text1.text = "알고리즘 결과는 " + result.ToString();
+    }
+    
     void Awake()
     {
         dismissButton.onClick.AddListener(Dismiss);
@@ -181,18 +191,59 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         CaptureButton.onClick.AddListener(CaptureFunction);
     }
     // 두 오브젝트를 비교하는 함수
+    //private bool CompareAlgorithm()
+    //{
+    //    compareNum = 0;
+    //    bool CompareResult;
+
+    //    Vector3 DistanceHeapPot = PositionCompare(OriginalSkeleton[1].position, humanBoneController.m_BoneMapping[1].position);
+
+    //    //StoredSkeleton에 정확히 저장 후 StoredSkeleton을 m_BoneMapping과 일치한 좌표로 옮기는 반복문
+    //    for (int i = 0; i < k_NumSkeletonJoints; i++)
+    //    {
+    //        StoredSkeleton[i] = OriginalSkeleton[i].StoreSave().StoreAllWorld();
+    //        StoredSkeleton[i].position = -1 * (DistanceHeapPot - OriginalSkeleton[i].position);
+    //        Vector3 JointDistance = StoredSkeleton[i].position - humanBoneController.m_BoneMapping[i].position;
+
+    //        if (JointDistance.sqrMagnitude < (0.01f)) PercentOfMatch[i] = true;
+    //        else PercentOfMatch[i] = false;
+    //    }
+
+    //    foreach (bool MatchResult in PercentOfMatch)
+    //    {
+    //        if (MatchResult == true) compareNum++;
+    //        else continue;
+    //    }
+
+    //    if (compareNum >= 70) CompareResult = true;
+    //    else CompareResult = false;
+
+    //    return CompareResult;
+    //}
+
+    //// 기존의 OriginalSkeleton과 humanBoneController.m_BoneMapping의 좌표 차이를 구해서 그 차이를 반환하는 함수
+    //private Vector3 PositionCompare(Vector3 StoreTransformPosition, Vector3 TransformPosition)
+    //{
+    //    return StoreTransformPosition - TransformPosition;
+    //}
+
     private bool CompareAlgorithm()
     {
         compareNum = 0;
         bool CompareResult;
 
-        Vector3 DistanceHeapPot = PositionCompare(OriginalSkeleton[1].position, humanBoneController.m_BoneMapping[1].position);
+        //bool IsSelect = GameObject.Find("Canvas").GetComponent<UISelector>().isSelected;
+        GameObject.Find("Canvas").GetComponent<UISelector>().InitializeTransform(humanBoneController);
+
+        Transform[] SelectedPoseInfor = GameObject.Find("Canvas").GetComponent<UISelector>().SelectPoseInfor;
+
+        Vector3 DistanceHeapPot = PositionCompare(SelectedPoseInfor[1].position, humanBoneController.m_BoneMapping[1].position);
 
         //StoredSkeleton에 정확히 저장 후 StoredSkeleton을 m_BoneMapping과 일치한 좌표로 옮기는 반복문
         for (int i = 0; i < k_NumSkeletonJoints; i++)
         {
-            StoredSkeleton[i] = OriginalSkeleton[i].StoreSave().StoreAllWorld();
-            StoredSkeleton[i].position = -1 * (DistanceHeapPot - OriginalSkeleton[i].position);
+            StoredSkeleton[i] = SelectedPoseInfor[i].Save().AllWorld();
+            StoredSkeleton[i].position = -1 * (DistanceHeapPot - SelectedPoseInfor[i].position);
             Vector3 JointDistance = StoredSkeleton[i].position - humanBoneController.m_BoneMapping[i].position;
 
             if (JointDistance.sqrMagnitude < (0.01f)) PercentOfMatch[i] = true;
@@ -208,6 +259,8 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         if (compareNum >= 70) CompareResult = true;
         else CompareResult = false;
 
+        TestText2.text = "Percent : " + compareNum.ToString() +"/ "+ humanBoneController.transform.localScale;
+
         return CompareResult;
     }
 
@@ -217,26 +270,15 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         return StoreTransformPosition - TransformPosition;
     }
 
+
     private void CaptureFunction()
     {
-        //TestObject = Instantiate(SkeletonPrefab, new Vector3(178, 1337, -373), Quaternion.identity);
-        //TestObject.transform.localScale = new Vector3(200,200,200);
-
-        //CapturedPoseCharacter = Instantiate(SkeletonPrefab);
-        //Children = CapturedPoseCharacter.GetComponentsInChildren<Transform>();
-        //CapturedPoseCharacter.layer = 8;
-        //CapturedPoseCharacter.transform.localScale = new Vector3(200, 200, 200);
-        //CapturedPoseCharacter.transform.position = new Vector3(0, 800, -400);
 
         if (IsAdded == true && CaptureCount < 10 &&  CaptureUse == true)
         {
 
             CapturedPoseCharacter = Instantiate(SkeletonPrefab);
-            //GameObject.Find("Canvas").GetComponent<UISelector>().SetObjectTransform(CapturedPoseCharacter, CaptureCount);
-
-
             Children = CapturedPoseCharacter.GetComponentsInChildren<Transform>();
-            //CapturedPoseCharacter.layer = 8;
 
             // 확장클래스를 활용해서 위치, 회전, 크기를 Deep copy
             for (int i = 0; i < k_NumSkeletonJoints; i++)
@@ -245,25 +287,16 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             }
             HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"access Children";
             GameObject.Find("Canvas").GetComponent<UISelector>().SetObjectTransform(CapturedPoseCharacter.transform, CaptureCount);
-            //Transform PPPPP = GameObject.Find("Canvas").GetComponent<UISelector>().ObjectPosition[CaptureCount];
-            //text1.text = PPPPP.position.ToString() + "////"+ humanBoneController.transform.position.ToString() + humanBoneController.transform.localScale.ToString();
             GameObject.Find("Canvas").GetComponent<UISelector>().PoseList[CaptureCount] = CapturedPoseCharacter;
 
 
             CreateStoredSkeleton(Children);
             TranslateCapturedPoseCharacter();
-            //CreateStoredSkeleton(Children2);
 
-            //Transform PPPPP = GameObject.Find("Canvas").GetComponent<UISelector>().ObjectPosition[CaptureCount];
             text1.text = CapturedPoseCharacter.transform.position.ToString() + "////" + CapturedPoseCharacter.transform.localScale.ToString();
-            //TestText2.text = CapturedPoseCharacter.transform.localPosition.ToString() + " //// " + Position1.transform.position.ToString();
 
             ButtonClicked = true;
-            // CapturedPoseCharacter.transform.parent = BasicObject.transform;
             HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"CaputuredPosedCharacter transform\n" + CapturedPoseCharacter.transform;
-            //CapturedPoseCharacter.transform.position = new Vector3(0.05f, -2.45f, 0);
-            //CapturedPoseCharacter.layer = 8;
-            //GameObject.Find("Canvas").GetComponent<UISelector>().AddFunc(CapturedPoseCharacter);
             CapturedPoseCharacter.layer = 8;
             CaptureCount++;
         }
@@ -278,7 +311,6 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     private void TranslateCapturedPoseCharacter()
     {
         CapturedPoseCharacter.transform.localScale += new Vector3(200, 200, 200);
-        //CapturedPoseCharacter.transform.position = new Vector3(Xposition, Yposition, -400);
         CapturedPoseCharacter.transform.position = PositionArray[CaptureCount - 1].transform.position;
         CapturedPoseCharacter.transform.rotation = PositionArray[0].transform.rotation;
     }

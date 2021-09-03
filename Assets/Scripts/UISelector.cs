@@ -1,8 +1,8 @@
-﻿using System.Collections;
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class UISelector : MonoBehaviour
 {
@@ -10,12 +10,14 @@ public class UISelector : MonoBehaviour
     public GameObject ReferenceObject;
     public GameObject[] PoseList = new GameObject[10];
     GameObject SelectedPose;
+    GameObject DummyPose;
     public Button DestroyButton;
     //public Button ConfirmButton;
 
     public GameObject UISelect;
 
     Dropdown.OptionData OpList;
+
 
     public Transform[] ObjectPosition = new Transform[10];
 
@@ -35,8 +37,8 @@ public class UISelector : MonoBehaviour
     Vector2 direction;
 
     bool isMoving;
-    bool isSelected;
-    [SerializeField]
+    public bool isSelected;
+    SerializeField]
     private Button ButtonOne;
     [SerializeField]
     private Button ButtonTwo;
@@ -57,6 +59,11 @@ public class UISelector : MonoBehaviour
 
     Vector3 OriginalSize;
     Quaternion OriginalRotation;
+    const int k_NumSkeletonJoints = 91;
+
+
+    public Transform[] SelectPoseInfor = new Transform[k_NumSkeletonJoints];
+    Transform[] PoseTransform;
 
     //public Text TestText1;
     int number;
@@ -74,6 +81,7 @@ public class UISelector : MonoBehaviour
         ButtonSeven.onClick.AddListener(UiSelectButtonClicked);
         ButtonEight.onClick.AddListener(UiSelectButtonClicked);
         ButtonNine.onClick.AddListener(UiSelectButtonClicked);
+        //ARCamera.cullingMask = ~(1 << 8);
     }
     private void UiSelectButtonClicked()
     {
@@ -89,6 +97,7 @@ public class UISelector : MonoBehaviour
             Debug.Log("currentSelect Gameobject is null");
 
     }
+
     private void Awake()
     {
         UISelectorDd.onValueChanged.AddListener(SelectPoseFunc);
@@ -96,13 +105,26 @@ public class UISelector : MonoBehaviour
         CaptureButton.onClick.AddListener(AddFunc);
         PoseScaler.onValueChanged.AddListener(ControllPoseScaler);
         PoseRotator.onValueChanged.AddListener(ControllPoseRotator);
+
     }
 
     // Update is called once per frame
     void Update()
     {
         TouchControll();
+        if (!PoseSelectState)
+        {
+            isSelected = true;
+            //InitializeTransform(SelectedPose);
+
+        }
+        else
+        {
+            isSelected = false;
+
+        }
     }
+
     void SelectPoseFunc(int index)
     {
         if (index == 0)
@@ -114,25 +136,96 @@ public class UISelector : MonoBehaviour
             if (PoseSelectState)
             {
                 SelectedPose = Instantiate(PoseList[index]);
-                //SelectedPose.transform.position -= SelectedPose.transform.position;
+
                 SelectedPose.transform.localScale = SelectedPose.transform.localScale - new Vector3(200, 200, 200);
                 SelectedPose.transform.position = ARPosition.transform.position;
                 SelectedPose.transform.rotation = ARCamera.transform.rotation;
-                SelectedPose.gameObject.layer = 0;
                 PoseSelectState = false;
                 UISelectorDd.gameObject.SetActive(PoseSelectState);
                 DestroyButton.gameObject.SetActive(!PoseSelectState);
                 UISelect.gameObject.SetActive(PoseSelectState);
-                SelectedPose.gameObject.SetActive(true);
+                //SelectedPose.gameObject.SetActive(true);
+                SelectedPose.gameObject.layer = 0;
+
+
+                DummyPose = Instantiate(PoseList[index]);
+                DummyPose.transform.localScale = DummyPose.transform.localScale - new Vector3(200, 200, 200);
+                DummyPose.transform.position = ARPosition.transform.position;
+                DummyPose.transform.rotation = ARCamera.transform.rotation;
+                DummyPose.gameObject.SetActive(false);
 
                 OriginalSize = SelectedPose.transform.localScale;
                 OriginalRotation = SelectedPose.transform.rotation;
+
+                //PoseTransform = SelectedPose.GetComponentsInChildren<Transform>();
+                //InitPoseTransform(PoseTransform);
+                //InitializeTransform(SelectedPose);
 
                 ResetPoseScaler();
                 ResetPoseRotator();
             }
         }
     }
+
+    public void InitializeTransform(HumanBoneController human)
+    {
+
+        DummyPose.transform.position = SelectedPose.transform.position;
+        DummyPose.transform.rotation = human.transform.rotation;
+        DummyPose.transform.localScale = new Vector3(1, 1, 1);
+
+        PoseTransform = DummyPose.GetComponentsInChildren<Transform>();
+        InitPoseTransform(PoseTransform);
+
+    }
+    //public void InitializeTransform(GameObject Pose)
+    //{
+    //    //GameObject CopyTransform = Pose;
+    //    //if(CopyTransform.transform.localScale != new Vector3(1, 1, 1))
+    //    //{
+    //    //    CopyTransform.transform.localScale = new Vector3(1, 1, 1);
+    //    //}
+    //    DummyPose.transform.position = Pose.transform.position;
+    //    DummyPose.transform.rotation = Pose.transform.rotation;
+    //    DummyPose.transform.localScale = new Vector3(1, 1, 1);
+
+    //    PoseTransform = DummyPose.GetComponentsInChildren<Transform>();
+    //    InitPoseTransform(PoseTransform);
+    //    //StoreTransform Copy = Pose.transform.Save().AllWorld();
+    //    //if(Copy.localScale != new Vector3(1, 1, 1))
+    //    //{
+
+    //    //}   
+    //}
+    private void InitPoseTransform(Transform[] trans)
+    {
+        int ChildCount = 0;
+        int IndexCount = 0;
+        int JointIndex = 0;
+
+        
+        foreach (var child in trans)
+        {
+            if (child.name == transform.name)
+                return;
+
+            else if (ChildCount >= 7 && IndexCount < 91)
+            {
+
+                JointIndex = GameObject.Find("AR Human Body Tracker").GetComponent<FindJointNumber>().GetJoint(child.name);
+                SelectPoseInfor[JointIndex] = child.transform;
+                IndexCount++;
+
+            }
+            if (JointIndex == 46)
+            {
+                ChildCount++;
+                return;
+            }
+            ChildCount++;
+        }
+    }
+
     public void SetObjectTransform(Transform input, int CaptureCount)
     {
         ObjectPosition[CaptureCount] = input;
