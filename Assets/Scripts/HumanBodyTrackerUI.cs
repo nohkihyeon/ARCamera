@@ -407,12 +407,12 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         }
         if (Count % 2 == 0)
         {
-            toggleOptionsButton.GetComponentInChildren<Text>().text = "Record\nMode";
+            // toggleOptionsButton.GetComponentInChildren<Text>().text = "Record\nMode";
             options.SetActive(false);
         }
         else if (Count % 2 == 1)
         {
-            toggleOptionsButton.GetComponentInChildren<Text>().text = "X";
+            // toggleOptionsButton.GetComponentInChildren<Text>().text = "X";
             options.SetActive(true);
         }
     }
