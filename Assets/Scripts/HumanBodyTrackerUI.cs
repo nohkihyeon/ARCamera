@@ -83,6 +83,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     private Toggle toggletracking;
 
     bool toggleBool = true;
+    bool AutoTakePic = false;
 
     const int k_NumSkeletonJoints = 91; // 조인트 수를 나타내는 값
 
@@ -175,6 +176,16 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             result = CompareAlgorithm();
         }
         text1.text = "알고리즘 결과는 " + result.ToString();
+        if(AutoTakePic && CompareAlgorithm())
+        {
+            humanBoneController.gameObject.SetActive(false);
+            GameObject.Find("AR Camera").GetComponent<CameraCapture>().TakePhoto();
+            Invoke("humanControllerSetTrue", 1f);
+        }
+    }
+    private void humanControllerSetTrue()
+    {
+        humanBoneController.gameObject.SetActive(true);
     }
     
     void Awake()
@@ -377,7 +388,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     private void Dismiss() => welcomePanel.SetActive(false);
     private void SelectDismiss() => UISelect.SetActive(false);
     private void SelectEnableButton() => UISelect.SetActive(true);
-
+    
     private void ToggleDebugging(bool value)
     {
         // ToggleText(humanBodyText);
@@ -385,9 +396,17 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         ToggleText(humanBoneControllerText);
 
         if (value == true)
-            debugText.GetComponentInChildren<Text>().text = "Debug Off";
+        {
+            debugText.GetComponentInChildren<Text>().text = "Compare 중";
+            AutoTakePic = true;
+            
+        }
         else
-            debugText.GetComponentInChildren<Text>().text = "Debug On";
+        {
+            AutoTakePic = false;
+            debugText.GetComponentInChildren<Text>().text = "자동촬영";
+        }
+        
     }
 
     private void ToggleText(Text text) => text.gameObject.SetActive(!text.gameObject.activeSelf);
@@ -395,16 +414,16 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     private void ToggleOptions()
     {
         Count++;
-        if (ButtonClicked == true)
-        {
-            //1
-            //유사도 비교 알고리즘 사용(향후 수정해야 한다.)
-            CompareAlgorithm();
-            HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"OriginalSkeleton[" + Count.ToString() + "] : (" + OriginalSkeleton[Count].position.x +
-                ", " + OriginalSkeleton[Count].position.y +
-                ", " + OriginalSkeleton[Count].position.z + ")";
+        // if (ButtonClicked == true)
+        // {
+        //     //1
+        //     //유사도 비교 알고리즘 사용(향후 수정해야 한다.)
+        //     CompareAlgorithm();
+        //     HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"OriginalSkeleton[" + Count.ToString() + "] : (" + OriginalSkeleton[Count].position.x +
+        //         ", " + OriginalSkeleton[Count].position.y +
+        //         ", " + OriginalSkeleton[Count].position.z + ")";
 
-        }
+        // }
         if (Count % 2 == 0)
         {
             // toggleOptionsButton.GetComponentInChildren<Text>().text = "Record\nMode";

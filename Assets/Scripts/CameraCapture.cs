@@ -18,7 +18,6 @@ public class CameraCapture : MonoBehaviour
         {
             if (!_camera)
             {
-                // _camera = Camera.main;
                 _camera = Camera.main;
             }
             return _camera;
@@ -32,31 +31,29 @@ public class CameraCapture : MonoBehaviour
         TakePhotoButton.onClick.AddListener(TakePhoto);
     }
 
-    private void TakePhoto()
+    public void TakePhoto()
     {
         Debug.Log("TakePhoto()" + fileCounter);
         Canvas.SetActive(false);
         Invoke("Screenshot", 0.4f);
-        // Screenshot();
     }
 
-    private void setActiveTrue()
+    public void setActiveTrue()
     {
         Canvas.SetActive(true);
     }
     
-    private void Screenshot()
+    public void Screenshot()
     {
         Texture2D texture = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
         texture.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
         texture.Apply();
 
         byte[] bytes = texture.EncodeToPNG();
-        string name = "AR Camera" + System.DateTime.Now.ToString("yyyy-mm-dd_HH-mm-ss") +fileCounter + ".png";
+        string name = "AR Camera" + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") +fileCounter + ".png";
         NativeGallery.SaveImageToGallery(bytes, "AR Camera", name);
         fileCounter++;
         Destroy(texture);
-        // Canvas.SetActive(true);
         Invoke("setActiveTrue", 1f);
         Debug.Log("Canvas True");
     }
