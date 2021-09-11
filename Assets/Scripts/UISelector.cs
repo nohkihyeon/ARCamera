@@ -10,7 +10,7 @@ public class UISelector : MonoBehaviour
     public Dropdown UISelectorDd;
     public GameObject ReferenceObject;
     public GameObject[] PoseList = new GameObject[10];
-    GameObject SelectedPose;
+    public GameObject SelectedPose;
     GameObject DummyPose;
     public Button DestroyButton;
     //public Button ConfirmButton;

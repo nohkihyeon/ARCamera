@@ -3241,6 +3241,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  SelectedPose: {fileID: 0}
   DestroyButton: {fileID: 1469997714}
   UISelect: {fileID: 1692531502}
   ObjectPosition:

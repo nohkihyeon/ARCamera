@@ -71,7 +71,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     private GameObject UISelect;
 
     [SerializeField]
-    private Toggle toggleDebug;
+    public Toggle toggleDebug;
 
     [SerializeField]
     private Text debugText;
@@ -178,14 +178,15 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         text1.text = "알고리즘 결과는 " + result.ToString();
         if(AutoTakePic && CompareAlgorithm())
         {
-            humanBoneController.gameObject.SetActive(false);
+            GameObject.Find("Canvas").GetComponent<UISelector>().SelectedPose.SetActive(false);
             GameObject.Find("AR Camera").GetComponent<CameraCapture>().TakePhoto();
-            Invoke("humanControllerSetTrue", 1f);
+            toggleDebug.isOn = false;
+            Invoke("humanControllerSetTrue", 1f); 
         }
     }
     private void humanControllerSetTrue()
     {
-        humanBoneController.gameObject.SetActive(true);
+        GameObject.Find("Canvas").GetComponent<UISelector>().SelectedPose.SetActive(true);
     }
     
     void Awake()
