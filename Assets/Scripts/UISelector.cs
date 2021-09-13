@@ -62,6 +62,8 @@ public class UISelector : MonoBehaviour
     Quaternion OriginalRotation;
     const int k_NumSkeletonJoints = 91;
 
+    bool StateTest;
+    public Text TestText2;
 
     public Transform[] SelectPoseInfor = new Transform[k_NumSkeletonJoints];
     Transform[] PoseTransform;
@@ -72,6 +74,7 @@ public class UISelector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        StateTest = false;
         InitDropDown();
         ButtonOne.onClick.AddListener(UiSelectButtonClicked);
         ButtonTwo.onClick.AddListener(UiSelectButtonClicked);
@@ -112,6 +115,7 @@ public class UISelector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        TestText2.text = StateTest.ToString();
         TouchControll();
         if (!PoseSelectState)
         {
@@ -179,25 +183,14 @@ public class UISelector : MonoBehaviour
         InitPoseTransform(PoseTransform);
 
     }
-    //public void InitializeTransform(GameObject Pose)
-    //{
-    //    //GameObject CopyTransform = Pose;
-    //    //if(CopyTransform.transform.localScale != new Vector3(1, 1, 1))
-    //    //{
-    //    //    CopyTransform.transform.localScale = new Vector3(1, 1, 1);
-    //    //}
-    //    DummyPose.transform.position = Pose.transform.position;
-    //    DummyPose.transform.rotation = Pose.transform.rotation;
-    //    DummyPose.transform.localScale = new Vector3(1, 1, 1);
-
-    //    PoseTransform = DummyPose.GetComponentsInChildren<Transform>();
-    //    InitPoseTransform(PoseTransform);
-    //    //StoreTransform Copy = Pose.transform.Save().AllWorld();
-    //    //if(Copy.localScale != new Vector3(1, 1, 1))
-    //    //{
-
-    //    //}   
-    //}
+    public void SetTrue()
+    {
+        SelectedPose.SetActive(true);
+    }
+    public void SetFalse()
+    {
+        SelectedPose.SetActive(false);
+    }
     private void InitPoseTransform(Transform[] trans)
     {
         int ChildCount = 0;
@@ -234,9 +227,11 @@ public class UISelector : MonoBehaviour
     public void DestroySelectedPose()
     {
         Destroy(SelectedPose);
+        Destroy(DummyPose);
         PoseSelectState = true;
         DestroyButton.gameObject.SetActive(!PoseSelectState);
         UISelectorDd.gameObject.SetActive(PoseSelectState);
+        StateTest = true;
     }
     void InitDropDown()
     {
@@ -278,13 +273,13 @@ public class UISelector : MonoBehaviour
         if (touch.phase == TouchPhase.Moved)
         {
             SelectedPose.transform.Translate(touch.deltaPosition * Time.deltaTime * 0.1f);
-            //SelectedPose.transform.Translate(touch.deltaPosition + new Vector2 (SelectedPose.transform.position.x, SelectedPose.transform.position.y));
         }
         if (touch.phase == TouchPhase.Ended)
         {
             isMoving = false;
             startPos = touch.position;
         }
+
     }
     private void ResetPoseScaler()
     {

@@ -128,6 +128,8 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     bool CaptureUse = true;
 
+    bool CaptureJudge;
+
 
     public GameObject[] PositionArray = new GameObject[9];
 
@@ -164,7 +166,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     private void Start()
     {
-
+        CaptureJudge = false;
         CaptureCount = 1;
     }
     private void Update()
@@ -180,13 +182,23 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         {
             GameObject.Find("Canvas").GetComponent<UISelector>().SelectedPose.SetActive(false);
             GameObject.Find("AR Camera").GetComponent<CameraCapture>().TakePhoto();
+            //GameObject.Find("Canvas").GetComponent<UISelector>().SelectedPose.SetActive(true);
+            CaptureJudge = true;
             toggleDebug.isOn = false;
-            Invoke("humanControllerSetTrue", 1f); 
+            //GameObject.Find("Canvas").GetComponent<UISelector>().DestroySelectedPose();
+            //Invoke("humanControllerSetTrue", 1f);
         }
+        if (CaptureJudge)
+        {
+            GameObject.Find("Canvas").GetComponent<UISelector>().SelectedPose.SetActive(true);
+            CaptureJudge = false;
+        }
+
     }
     private void humanControllerSetTrue()
     {
-        GameObject.Find("Canvas").GetComponent<UISelector>().SelectedPose.SetActive(true);
+        //GameObject.Find("Canvas").GetComponent<UISelector>().SelectedPose.SetActive(true);
+        GameObject.Find("Canvas").GetComponent<UISelector>().DestroySelectedPose();
     }
     
     void Awake()
@@ -271,7 +283,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         if (compareNum >= 70) CompareResult = true;
         else CompareResult = false;
 
-        TestText2.text = "Percent : " + compareNum.ToString() +"/ "+ humanBoneController.transform.localScale;
+        //TestText2.text = "Percent : " + compareNum.ToString() +"/ "+ humanBoneController.transform.localScale;
 
         return CompareResult;
     }
