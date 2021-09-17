@@ -39,7 +39,7 @@ public class UISelector : MonoBehaviour
 
     bool isMoving;
     public bool isSelected;
-   [SerializeField]
+    [SerializeField]
     private Button ButtonOne;
     [SerializeField]
     private Button ButtonTwo;
@@ -63,18 +63,14 @@ public class UISelector : MonoBehaviour
     const int k_NumSkeletonJoints = 91;
 
     bool StateTest;
-    public Text TestText2;
+    //public Text TestText2;
 
     public Transform[] SelectPoseInfor = new Transform[k_NumSkeletonJoints];
     Transform[] PoseTransform;
 
+    //public Text TestText1;
     int number;
     bool PoseSelectState;
-
-    // for object two touch
-    private float initialDistance;
-    private Vector3 initialScale;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -94,13 +90,13 @@ public class UISelector : MonoBehaviour
     private void UiSelectButtonClicked()
     {
         var go = EventSystem.current.currentSelectedGameObject;
-        if(go !=null)
+        if (go != null)
         {
             Debug.Log("Clicked on : " + go.name);
             int num = (int)char.GetNumericValue(go.name.ToCharArray()[7]);
             SelectPoseFunc(num);
         }
-            
+
         else
             Debug.Log("currentSelect Gameobject is null");
 
@@ -119,9 +115,8 @@ public class UISelector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        TestText2.text = StateTest.ToString();
+        //TestText2.text = StateTest.ToString();
         TouchControll();
-        // twoTouchEvent();
         if (!PoseSelectState)
         {
             isSelected = true;
@@ -202,7 +197,7 @@ public class UISelector : MonoBehaviour
         int IndexCount = 0;
         int JointIndex = 0;
 
-        
+
         foreach (var child in trans)
         {
             if (child.name == transform.name)
@@ -285,48 +280,6 @@ public class UISelector : MonoBehaviour
             startPos = touch.position;
         }
 
-    }
-    private void twoTouchEvent()
-    {
-        if (Input.touchCount == 2)
-        {
-            Touch touchZero = Input.GetTouch(0); 
-            Touch touchOne = Input.GetTouch(1);
-
-            // if one of the touches Ended or Canceled do nothing
-            if(touchZero.phase == TouchPhase.Ended || touchZero.phase == TouchPhase.Canceled  
-            || touchOne.phase == TouchPhase.Ended || touchOne.phase == TouchPhase.Canceled) 
-            {
-                return;
-            }
-
-            // It is enough to check whether one of them began since we
-            // already excluded the Ended and Canceled phase in the line before
-            if(touchZero.phase == TouchPhase.Began || touchOne.phase == TouchPhase.Began)
-            {
-                // track the initial values
-                initialDistance = Vector2.Distance(touchZero.position, touchOne.position);
-                initialScale = SelectedPose.transform.localScale;
-            }
-            // else now is any other case where touchZero and/or touchOne are in one of the states
-            // of Stationary or Moved
-            else
-            {
-                // otherwise get the current distance
-                var currentDistance = Vector2.Distance(touchZero.position, touchOne.position);
-
-                // A little emergency brake ;)
-                // if(Mathf.Approximately(initialDistance, 0)) return;
-
-                // get the scale factor of the current distance relative to the inital one
-                var factor = currentDistance / initialDistance;
-
-                // apply the scale
-                // instead of a continuous addition rather always base the 
-                // calculation on the initial and current value only
-                SelectedPose.transform.localScale = initialScale * factor;
-            }
-        }
     }
     private void ResetPoseScaler()
     {

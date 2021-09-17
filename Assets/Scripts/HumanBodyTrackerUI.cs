@@ -135,6 +135,8 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     bool result = false;
 
+
+
     public ARHumanBodyManager HumanBodyManagers
     {
         get { return humanBodyManager; }
@@ -427,6 +429,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     private void ToggleOptions()
     {
         Count++;
+        //GameObject.Find("AR Session Origin").GetComponentInChildren<SoundScript>().SutterTrigger();
         // if (ButtonClicked == true)
         // {
         //     //1

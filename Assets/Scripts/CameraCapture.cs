@@ -11,6 +11,9 @@ public class CameraCapture : MonoBehaviour
     private GameObject Canvas;
     public int fileCounter;
     public KeyCode screenshotKey;
+    public AudioSource SutterSound;
+
+    //public AudioClip CameraSound;
 
     private Camera Camera
     {
@@ -54,6 +57,9 @@ public class CameraCapture : MonoBehaviour
         NativeGallery.SaveImageToGallery(bytes, "AR Camera", name);
         fileCounter++;
         Destroy(texture);
+
+        SutterSound.Play();
+
         Invoke("setActiveTrue", 1f);
         Debug.Log("Canvas True");
     }
