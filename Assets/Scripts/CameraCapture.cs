@@ -75,6 +75,8 @@ public class CameraCapture : MonoBehaviour
     public void setActiveTrue()
     {
         Canvas.SetActive(true);
+        GameObject.Find("AlertPanel").GetComponent<AlertMessageController>().popUpMessage("자동촬영 되었습니다!");
+
     }
     
     public void Screenshot()

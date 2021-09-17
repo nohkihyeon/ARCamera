@@ -95,6 +95,7 @@ public class UISelector : MonoBehaviour
             Debug.Log("Clicked on : " + go.name);
             int num = (int)char.GetNumericValue(go.name.ToCharArray()[7]);
             SelectPoseFunc(num);
+            GameObject.Find("AlertPanel").GetComponent<AlertMessageController>().popUpMessage("선택하신 포즈로 생성되었어요!");
         }
 
         else

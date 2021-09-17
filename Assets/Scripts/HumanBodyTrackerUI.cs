@@ -184,7 +184,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         {
             result = CompareAlgorithm();
         }
-        text1.text = "알고리즘 결과는 " + result.ToString();
+        // text1.text = "알고리즘 결과는 " + result.ToString();
         if(AutoTakePic && CompareAlgorithm())
         {
             GameObject.Find("Canvas").GetComponent<UISelector>().SelectedPose.SetActive(false);
@@ -261,7 +261,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
         if (IsAdded == true && CaptureCount < 10 &&  CaptureUse == true)
         {
-
+            GameObject.Find("AlertPanel").GetComponent<AlertMessageController>().popUpMessage("포즈 저장 완료!");
             CapturedPoseCharacter = Instantiate(SkeletonPrefab);
             Children = CapturedPoseCharacter.GetComponentsInChildren<Transform>();
 
