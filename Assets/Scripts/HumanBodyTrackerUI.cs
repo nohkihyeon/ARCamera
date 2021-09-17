@@ -77,7 +77,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     private Text debugText;
 
     [SerializeField]
-    private Toggle toggleupdate;
+    private Button ObjectControllerButton;
 
     [SerializeField]
     private Toggle toggletracking;
@@ -126,9 +126,11 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     int Yposition = 1300;
     int YCount = 1;
 
-    bool CaptureUse = true;
+    public bool CaptureUse;
 
     bool CaptureJudge;
+    bool ControllerState;
+    bool UISelectState;
 
 
     public GameObject[] PositionArray = new GameObject[9];
@@ -168,8 +170,11 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     private void Start()
     {
+        CaptureUse = true;
         CaptureJudge = false;
         CaptureCount = 1;
+        ControllerState = false;
+        UISelectState = false;
     }
     private void Update()
     {
@@ -184,11 +189,8 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         {
             GameObject.Find("Canvas").GetComponent<UISelector>().SelectedPose.SetActive(false);
             GameObject.Find("AR Camera").GetComponent<CameraCapture>().TakePhoto();
-            //GameObject.Find("Canvas").GetComponent<UISelector>().SelectedPose.SetActive(true);
             CaptureJudge = true;
             toggleDebug.isOn = false;
-            //GameObject.Find("Canvas").GetComponent<UISelector>().DestroySelectedPose();
-            //Invoke("humanControllerSetTrue", 1f);
         }
         if (CaptureJudge)
         {
@@ -197,68 +199,25 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         }
 
     }
-    private void humanControllerSetTrue()
-    {
-        //GameObject.Find("Canvas").GetComponent<UISelector>().SelectedPose.SetActive(true);
-        GameObject.Find("Canvas").GetComponent<UISelector>().DestroySelectedPose();
-    }
     
     void Awake()
     {
         dismissButton.onClick.AddListener(Dismiss);
-        UISelectDismiss.onClick.AddListener(SelectDismiss);
         toggleOptionsButton.onClick.AddListener(ToggleOptions);
         toggleDebug.onValueChanged.AddListener(ToggleDebugging);
-        toggleupdate.onValueChanged.AddListener(ToggleBoolFunc);
-        selectButton.onClick.AddListener(SelectEnableButton);
+        ObjectControllerButton.onClick.AddListener(ObjectController);
+        selectButton.onClick.AddListener(UISelectSetFunc);
         toggletracking.onValueChanged.AddListener(SkeletonOnOff);
 
         //좌표 저장 시 사용할 버튼 활성화
         CaptureButton.onClick.AddListener(CaptureFunction);
     }
     // 두 오브젝트를 비교하는 함수
-    //private bool CompareAlgorithm()
-    //{
-    //    compareNum = 0;
-    //    bool CompareResult;
-
-    //    Vector3 DistanceHeapPot = PositionCompare(OriginalSkeleton[1].position, humanBoneController.m_BoneMapping[1].position);
-
-    //    //StoredSkeleton에 정확히 저장 후 StoredSkeleton을 m_BoneMapping과 일치한 좌표로 옮기는 반복문
-    //    for (int i = 0; i < k_NumSkeletonJoints; i++)
-    //    {
-    //        StoredSkeleton[i] = OriginalSkeleton[i].StoreSave().StoreAllWorld();
-    //        StoredSkeleton[i].position = -1 * (DistanceHeapPot - OriginalSkeleton[i].position);
-    //        Vector3 JointDistance = StoredSkeleton[i].position - humanBoneController.m_BoneMapping[i].position;
-
-    //        if (JointDistance.sqrMagnitude < (0.01f)) PercentOfMatch[i] = true;
-    //        else PercentOfMatch[i] = false;
-    //    }
-
-    //    foreach (bool MatchResult in PercentOfMatch)
-    //    {
-    //        if (MatchResult == true) compareNum++;
-    //        else continue;
-    //    }
-
-    //    if (compareNum >= 70) CompareResult = true;
-    //    else CompareResult = false;
-
-    //    return CompareResult;
-    //}
-
-    //// 기존의 OriginalSkeleton과 humanBoneController.m_BoneMapping의 좌표 차이를 구해서 그 차이를 반환하는 함수
-    //private Vector3 PositionCompare(Vector3 StoreTransformPosition, Vector3 TransformPosition)
-    //{
-    //    return StoreTransformPosition - TransformPosition;
-    //}
-
     private bool CompareAlgorithm()
     {
         compareNum = 0;
         bool CompareResult;
 
-        //bool IsSelect = GameObject.Find("Canvas").GetComponent<UISelector>().isSelected;
         GameObject.Find("Canvas").GetComponent<UISelector>().InitializeTransform(humanBoneController);
 
         Transform[] SelectedPoseInfor = GameObject.Find("Canvas").GetComponent<UISelector>().SelectPoseInfor;
@@ -361,7 +320,6 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             else if (ChildCount >= 7 && IndexCount < 91)
             {
 
-                //JointIndex = HumanBoneController.instance.GetJoint(child.name);
                 JointIndex = GameObject.Find("AR Human Body Tracker").GetComponent<FindJointNumber>().GetJoint(child.name);
                 child.transform.position = OriginalSkeleton[JointIndex].position;
                 child.transform.rotation = OriginalSkeleton[JointIndex].rotation;
@@ -372,13 +330,11 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             if (JointIndex == 46)
             {
                 ChildCount++;
-                // HumanBodyTrackerUI.Instance.humanBodyText.text = $" NotEndforeach, ChildCount = " + ChildCount + ", IndexCount : " + IndexCount;
                 return;
             }
             child.gameObject.layer = 8;
             ChildCount++;
         }
-        // HumanBodyTrackerUI.Instance.humanBodyText.text = $" Endforeach";
     }
 
 
@@ -401,8 +357,12 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         }
     }
     private void Dismiss() => welcomePanel.SetActive(false);
-    private void SelectDismiss() => UISelect.SetActive(false);
-    private void SelectEnableButton() => UISelect.SetActive(true);
+
+    private void UISelectSetFunc()
+    {
+        UISelectState = !UISelectState;
+        UISelect.SetActive(UISelectState);
+    }
     
     private void ToggleDebugging(bool value)
     {
@@ -429,84 +389,59 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     private void ToggleOptions()
     {
         Count++;
-        //GameObject.Find("AR Session Origin").GetComponentInChildren<SoundScript>().SutterTrigger();
-        // if (ButtonClicked == true)
-        // {
-        //     //1
-        //     //유사도 비교 알고리즘 사용(향후 수정해야 한다.)
-        //     CompareAlgorithm();
-        //     HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"OriginalSkeleton[" + Count.ToString() + "] : (" + OriginalSkeleton[Count].position.x +
-        //         ", " + OriginalSkeleton[Count].position.y +
-        //         ", " + OriginalSkeleton[Count].position.z + ")";
-
-        // }
         if (Count % 2 == 0)
         {
-            // toggleOptionsButton.GetComponentInChildren<Text>().text = "Record\nMode";
             options.SetActive(false);
         }
         else if (Count % 2 == 1)
         {
-            // toggleOptionsButton.GetComponentInChildren<Text>().text = "X";
             options.SetActive(true);
         }
     }
-    private void ToggleBoolFunc(bool value)
+    private void ObjectController()
     {
-        if (value == true)
-        {
-            toggleBool = true;
-        }
-        else if (value == false)
-        {
-            toggleBool = false;
-        }
+        ControllerState = !ControllerState;
+        GameObject.Find("Canvas").GetComponent<UISelector>().PoseRotator.gameObject.SetActive(ControllerState);
+        GameObject.Find("Canvas").GetComponent<UISelector>().PoseScaler.gameObject.SetActive(ControllerState);
     }
 
 
     void OnHumanBodiesChanged(ARHumanBodiesChangedEventArgs eventArgs)
     {
-        if (toggleBool == false)
+        
+        foreach (var humanBody in eventArgs.added)
         {
+            if (!skeletonTracker.TryGetValue(humanBody.trackableId, out humanBoneController))
+            {
+                Debug.Log($"Adding a new skeleton [{humanBody.trackableId}].");
+                var newSkeletonGO = Instantiate(skeletonPrefab, humanBody.transform);
 
+                humanBoneController = newSkeletonGO.GetComponent<HumanBoneController>();
+
+                // add an offset just when the human body is added
+                humanBoneController.transform.position = humanBoneController.transform.position +
+                    new Vector3(skeletonOffsetX, skeletonOffsetY, skeletonOffsetZ);
+
+                skeletonTracker.Add(humanBody.trackableId, humanBoneController);
+            }
+
+            humanBoneController.InitializeSkeletonJoints();
+            humanBoneController.ApplyBodyPose(humanBody, Vector3.zero);
+            IsAdded = true;
         }
 
-        if (toggleBool == true)
+        
+    // true 버튼을 눌렀을때만 실행
+        
+        foreach (var humanBody in eventArgs.updated)
         {
-            foreach (var humanBody in eventArgs.added)
+            if (skeletonTracker.TryGetValue(humanBody.trackableId, out humanBoneController))
             {
-                if (!skeletonTracker.TryGetValue(humanBody.trackableId, out humanBoneController))
-                {
-                    Debug.Log($"Adding a new skeleton [{humanBody.trackableId}].");
-                    var newSkeletonGO = Instantiate(skeletonPrefab, humanBody.transform);
-
-                    humanBoneController = newSkeletonGO.GetComponent<HumanBoneController>();
-
-                    // add an offset just when the human body is added
-                    humanBoneController.transform.position = humanBoneController.transform.position +
-                        new Vector3(skeletonOffsetX, skeletonOffsetY, skeletonOffsetZ);
-
-                    skeletonTracker.Add(humanBody.trackableId, humanBoneController);
-                }
-
-                humanBoneController.InitializeSkeletonJoints();
                 humanBoneController.ApplyBodyPose(humanBody, Vector3.zero);
-                IsAdded = true;
-            }
 
-        }
-        // true 버튼을 눌렀을때만 실행
-        if (toggleBool == true)
-        {
-            foreach (var humanBody in eventArgs.updated)
-            {
-                if (skeletonTracker.TryGetValue(humanBody.trackableId, out humanBoneController))
-                {
-                    humanBoneController.ApplyBodyPose(humanBody, Vector3.zero);
-
-                }
             }
         }
+        
 
         foreach (var humanBody in eventArgs.removed)
         {
@@ -517,6 +452,57 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
                 skeletonTracker.Remove(humanBody.trackableId);
             }
         }
+        //if (toggleBool == false)
+        //{
+
+        //}
+
+        //if (toggleBool == true)
+        //{
+        //    foreach (var humanBody in eventArgs.added)
+        //    {
+        //        if (!skeletonTracker.TryGetValue(humanBody.trackableId, out humanBoneController))
+        //        {
+        //            Debug.Log($"Adding a new skeleton [{humanBody.trackableId}].");
+        //            var newSkeletonGO = Instantiate(skeletonPrefab, humanBody.transform);
+
+        //            humanBoneController = newSkeletonGO.GetComponent<HumanBoneController>();
+
+        //            // add an offset just when the human body is added
+        //            humanBoneController.transform.position = humanBoneController.transform.position +
+        //                new Vector3(skeletonOffsetX, skeletonOffsetY, skeletonOffsetZ);
+
+        //            skeletonTracker.Add(humanBody.trackableId, humanBoneController);
+        //        }
+
+        //        humanBoneController.InitializeSkeletonJoints();
+        //        humanBoneController.ApplyBodyPose(humanBody, Vector3.zero);
+        //        IsAdded = true;
+        //    }
+
+        //}
+        //// true 버튼을 눌렀을때만 실행
+        //if (toggleBool == true)
+        //{
+        //    foreach (var humanBody in eventArgs.updated)
+        //    {
+        //        if (skeletonTracker.TryGetValue(humanBody.trackableId, out humanBoneController))
+        //        {
+        //            humanBoneController.ApplyBodyPose(humanBody, Vector3.zero);
+
+        //        }
+        //    }
+        //}
+
+        //foreach (var humanBody in eventArgs.removed)
+        //{
+        //    Debug.Log($"Removing a skeleton [{humanBody.trackableId}].");
+        //    if (skeletonTracker.TryGetValue(humanBody.trackableId, out humanBoneController))
+        //    {
+        //        Destroy(humanBoneController.gameObject);
+        //        skeletonTracker.Remove(humanBody.trackableId);
+        //    }
+        //}
     }
 }
 

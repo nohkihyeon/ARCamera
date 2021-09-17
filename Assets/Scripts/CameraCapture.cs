@@ -12,6 +12,7 @@ public class CameraCapture : MonoBehaviour
     public int fileCounter;
     public KeyCode screenshotKey;
     public AudioSource SutterSound;
+    bool State;
 
     //public AudioClip CameraSound;
 
@@ -31,7 +32,37 @@ public class CameraCapture : MonoBehaviour
     private Camera _camera;
     void Awake()
     {
-        TakePhotoButton.onClick.AddListener(TakePhoto);
+        TakePhotoButton.onClick.AddListener(PhotoFunc);
+    }
+    private void Start()
+    {
+        State = false;
+    }
+    private void Update()
+    {
+        if (State)
+        {
+            ActiveObject();
+        }    
+    }
+
+    private void PhotoFunc()
+    {
+        bool Identify = GameObject.Find("Canvas").GetComponent<UISelector>().UIStateInfor;
+        if (State == false)
+        {
+
+            if (Identify)
+                GameObject.Find("Canvas").GetComponent<UISelector>().SelectedPose.SetActive(State);
+            State = !State;
+            TakePhoto();
+        }
+    }
+
+    private void ActiveObject()
+    {
+        GameObject.Find("Canvas").GetComponent<UISelector>().SelectedPose.SetActive(State);
+        State = !State;
     }
 
     public void TakePhoto()

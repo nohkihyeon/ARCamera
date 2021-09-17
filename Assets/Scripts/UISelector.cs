@@ -62,7 +62,7 @@ public class UISelector : MonoBehaviour
     Quaternion OriginalRotation;
     const int k_NumSkeletonJoints = 91;
 
-    bool StateTest;
+    public bool UIStateInfor;
     //public Text TestText2;
 
     public Transform[] SelectPoseInfor = new Transform[k_NumSkeletonJoints];
@@ -74,7 +74,7 @@ public class UISelector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StateTest = false;
+        UIStateInfor = false;
         InitDropDown();
         ButtonOne.onClick.AddListener(UiSelectButtonClicked);
         ButtonTwo.onClick.AddListener(UiSelectButtonClicked);
@@ -146,11 +146,12 @@ public class UISelector : MonoBehaviour
                 SelectedPose.transform.position = ARPosition.transform.position;
                 SelectedPose.transform.rotation = ARCamera.transform.rotation;
                 PoseSelectState = false;
-                UISelectorDd.gameObject.SetActive(PoseSelectState);
+                //UISelectorDd.gameObject.SetActive(PoseSelectState);
                 DestroyButton.gameObject.SetActive(!PoseSelectState);
                 UISelect.gameObject.SetActive(PoseSelectState);
                 //SelectedPose.gameObject.SetActive(true);
                 SelectedPose.gameObject.layer = 0;
+                UIStateInfor = true;
 
 
                 DummyPose = Instantiate(PoseList[index]);
@@ -230,8 +231,8 @@ public class UISelector : MonoBehaviour
         Destroy(DummyPose);
         PoseSelectState = true;
         DestroyButton.gameObject.SetActive(!PoseSelectState);
-        UISelectorDd.gameObject.SetActive(PoseSelectState);
-        StateTest = true;
+        //UISelectorDd.gameObject.SetActive(PoseSelectState);
+        UIStateInfor = false;
     }
     void InitDropDown()
     {
