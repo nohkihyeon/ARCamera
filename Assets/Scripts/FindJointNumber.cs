@@ -101,21 +101,7 @@ public class FindJointNumber : MonoBehaviour
         RightHandThumbEnd = 90, // parent: RightHandThumb2 [89]
     }
 
-    //const int k_NumSkeletonJoints = 91;
-    //Transform[] SelectPoseInfor = new Transform[k_NumSkeletonJoints];
-
-    //void ProcessJoint(Transform joint)
-    //{
-    //    int index = GetJoint(joint.name);
-    //    if (index >= 0 && index < k_NumSkeletonJoints)
-    //    {
-    //        SelectPoseInfor[index] = joint;
-    //    }
-    //    else
-    //    {
-    //        Debug.LogWarning($"{joint.name} was not found.");
-    //    }
-    //}
+   
     public int GetJoint(string jointName)
     {
         JointIndices joint = (JointIndices)Enum.Parse(typeof(JointIndices), jointName);

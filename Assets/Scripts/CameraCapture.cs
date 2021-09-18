@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
- 
+
 public class CameraCapture : MonoBehaviour
 {
     [SerializeField]
@@ -43,7 +43,7 @@ public class CameraCapture : MonoBehaviour
         if (State)
         {
             ActiveObject();
-        }    
+        }
     }
 
     private void PhotoFunc()
@@ -78,7 +78,7 @@ public class CameraCapture : MonoBehaviour
         GameObject.Find("AlertPanel").GetComponent<AlertMessageController>().popUpMessage("자동촬영 되었습니다!");
 
     }
-    
+
     public void Screenshot()
     {
         Texture2D texture = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
@@ -86,7 +86,7 @@ public class CameraCapture : MonoBehaviour
         texture.Apply();
 
         byte[] bytes = texture.EncodeToPNG();
-        string name = "AR Camera" + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") +fileCounter + ".png";
+        string name = "AR Camera" + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + fileCounter + ".png";
         NativeGallery.SaveImageToGallery(bytes, "AR Camera", name);
         fileCounter++;
         Destroy(texture);

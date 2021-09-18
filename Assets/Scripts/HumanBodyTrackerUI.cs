@@ -137,6 +137,8 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     bool result = false;
 
+    public Text tex;
+
 
 
     public ARHumanBodyManager HumanBodyManagers
@@ -185,7 +187,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             result = CompareAlgorithm();
         }
         // text1.text = "알고리즘 결과는 " + result.ToString();
-        if(AutoTakePic && CompareAlgorithm())
+        if (AutoTakePic && CompareAlgorithm())
         {
             GameObject.Find("Canvas").GetComponent<UISelector>().SelectedPose.SetActive(false);
             GameObject.Find("AR Camera").GetComponent<CameraCapture>().TakePhoto();
@@ -199,7 +201,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         }
 
     }
-    
+
     void Awake()
     {
         dismissButton.onClick.AddListener(Dismiss);
@@ -259,7 +261,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     private void CaptureFunction()
     {
 
-        if (IsAdded == true && CaptureCount < 10 &&  CaptureUse == true)
+        if (IsAdded == true && CaptureCount < 10 && CaptureUse == true)
         {
             GameObject.Find("AlertPanel").GetComponent<AlertMessageController>().popUpMessage("포즈 저장 완료!");
             CapturedPoseCharacter = Instantiate(SkeletonPrefab);
@@ -277,13 +279,12 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
             CreateStoredSkeleton(Children);
             TranslateCapturedPoseCharacter();
+            CaptureCount++;
 
-            text1.text = CapturedPoseCharacter.transform.position.ToString() + "////" + CapturedPoseCharacter.transform.localScale.ToString();
 
             ButtonClicked = true;
-            HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"CaputuredPosedCharacter transform\n" + CapturedPoseCharacter.transform;
+            //HumanBodyTrackerUI.Instance.humanBodyTrackerText.text = $"CaputuredPosedCharacter transform\n" + CapturedPoseCharacter.transform;
             CapturedPoseCharacter.layer = 8;
-            CaptureCount++;
         }
         else
         {
@@ -297,6 +298,8 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     {
         CapturedPoseCharacter.transform.localScale += new Vector3(200, 200, 200);
         CapturedPoseCharacter.transform.position = PositionArray[CaptureCount - 1].transform.position;
+        tex.text = CaptureCount.ToString();
+
         CapturedPoseCharacter.transform.rotation = PositionArray[0].transform.rotation;
     }
 
@@ -342,7 +345,8 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     {
         if (toggleBool == true)
         {
-            if (value == true) {
+            if (value == true)
+            {
                 CaptureUse = true;
                 humanBoneController.gameObject.SetActive(CaptureUse);
             }
@@ -363,7 +367,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         UISelectState = !UISelectState;
         UISelect.SetActive(UISelectState);
     }
-    
+
     private void ToggleDebugging(bool value)
     {
         // ToggleText(humanBodyText);
@@ -374,14 +378,14 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         {
             debugText.GetComponentInChildren<Text>().text = "Compare 중";
             AutoTakePic = true;
-            
+
         }
         else
         {
             AutoTakePic = false;
             debugText.GetComponentInChildren<Text>().text = "자동촬영";
         }
-        
+
     }
 
     private void ToggleText(Text text) => text.gameObject.SetActive(!text.gameObject.activeSelf);
@@ -408,7 +412,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
     void OnHumanBodiesChanged(ARHumanBodiesChangedEventArgs eventArgs)
     {
-        
+
         foreach (var humanBody in eventArgs.added)
         {
             if (!skeletonTracker.TryGetValue(humanBody.trackableId, out humanBoneController))
@@ -430,9 +434,9 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
             IsAdded = true;
         }
 
-        
-    // true 버튼을 눌렀을때만 실행
-        
+
+        // true 버튼을 눌렀을때만 실행
+
         foreach (var humanBody in eventArgs.updated)
         {
             if (skeletonTracker.TryGetValue(humanBody.trackableId, out humanBoneController))
@@ -441,7 +445,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
             }
         }
-        
+
 
         foreach (var humanBody in eventArgs.removed)
         {
