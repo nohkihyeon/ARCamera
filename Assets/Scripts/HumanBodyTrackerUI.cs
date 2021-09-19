@@ -85,6 +85,10 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
     bool toggleBool = true;
     bool AutoTakePic = false;
 
+    public GameObject CompareTextPanel;
+
+    public Text CompareText;
+
     const int k_NumSkeletonJoints = 91; // 조인트 수를 나타내는 값
 
 
@@ -177,6 +181,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         CaptureCount = 1;
         ControllerState = false;
         UISelectState = false;
+        CompareTextPanel.SetActive(false);
     }
     private void Update()
     {
@@ -185,6 +190,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         if (IsSelect)
         {
             result = CompareAlgorithm();
+            CompareText.text = compareNum.ToString() + "%";
         }
         // text1.text = "알고리즘 결과는 " + result.ToString();
         if (AutoTakePic && CompareAlgorithm())
@@ -376,6 +382,8 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
 
         if (value == true)
         {
+            CompareTextPanel.SetActive(true);
+            ObjectControllerButton.gameObject.SetActive(false);
             debugText.GetComponentInChildren<Text>().text = "Compare 중";
             AutoTakePic = true;
 
@@ -384,6 +392,7 @@ public class HumanBodyTrackerUI : Singleton<HumanBodyTrackerUI>
         {
             AutoTakePic = false;
             debugText.GetComponentInChildren<Text>().text = "자동촬영";
+            ObjectControllerButton.gameObject.SetActive(true);
         }
 
     }

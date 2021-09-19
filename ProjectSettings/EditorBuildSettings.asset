@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/UseIpad.unity
     guid: 710a7745d4868478b85c37f5a167640a
+  - enabled: 0
+    path: Assets/Scenes/UseXR.unity
+    guid: bf73c42f78e924aee9ed87261f8bbe69
   m_configObjects:
     com.unity.xr.management.arcore_loader: {fileID: 11400000, guid: e615bd911c1f24b4d924f929bfda5c67,
       type: 2}
